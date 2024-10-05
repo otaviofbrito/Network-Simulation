@@ -8,7 +8,7 @@
 #include "little.h"
 
 #define INTERVALO 100.0
-#define CSV_PATH "data/output.csv"
+#define CSV_PATH "c_project/data/output.csv"
 
 int main(int argc, char *argv[])
 {
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
   char time_str[20];
   strftime(time_str, sizeof(time_str), "%Y%m%d_%H%M%S", tm_info);
 
-  sprintf(new_name, "data/output_%s_%d.csv", time_str, file_ocup);
+  sprintf(new_name, "c_project/data/output_%s_%d.csv", time_str, file_ocup);
 
   if (rename(CSV_PATH, new_name) != 0)
   {

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report</title>
+    <link rel="stylesheet" href="utils/template.css" />
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script
+      id="MathJax-script"
+      async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <script src="utils/script.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Simulação via Eventos Discretos</h1>
+        <p class="subtitle">Discrete Time Event Simulation</p>
+      </header>
+      <div class="section">
+        <h2>Simulação de Rede Pt. 1</h2>
+      </div>
+      <hr class="stylized-line" />
+      <div class="section">
+        <h2>Medidas de Desempenho</h2>
+        <p>
+          O modelo é considerado estável somente se \(\lambda < \mu\). Se, em
+          média, as chegadas ocorrem mais rapidamente que as conclusões dos
+          serviços, a fila se tornará indefinidamente longa.
+        </p>
+
+        <p>
+          A seguir foram calculadas medidas de desempenho com base em cada
+          simulação realizada, cada gráfico conta com uma legenda onde estão
+          classificadas as simulações e seus respectivos parâmetros de execução:
+        </p>
+        <ul>
+          <li>
+            <b
+              >(P1: Tempo médio entre as chegadas escolhido, P2: Tempo médio de
+              atendimento escolhido)</b
+            >
+          </li>
+        </ul>
+
+        Em algumas medidas, existem campos que podem ser utilzados para validar
+        o desempenho do sistema.
+      </div>
+      <hr class="stylized-line" />
+      <div class="section">
+        <h3>Tabela</h2>
+          {{ fig1|safe }}
+      </div>
+      <hr class="stylized-line" />
+      <div class="section">
+        <h3>1. Utilização/Ocupação (\(\rho\))</h3>
+
+        {{ fig2|safe }}
+
+        <div class="calc">
+          <h3>Valide a utilização:</h3>
+          <div class="conta">
+            \(\rho\) =
+            <div class="left">
+              <div class="input">
+                <label for="util_lambda">Taxa de chegada (λ):</label>
+                <input
+                  type="number"
+                  id="util_lambda"
+                  placeholder="λ"
+                  min="0"
+                  step="0.1"
+                />
+              </div>
+
+              <div>
+                <hr />
+                <div class="input">
+                  <label for="util_mu">Taxa de serviço (μ):</label>
+                  <input
+                    type="number"
+                    id="util_mu"
+                    placeholder="μ"
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="right">
+              <p id="util_res"></p>
+            </div>
+          </div>
+
+          <button onclick="calcularOcupacao()">Calcular</button>
+        </div>
+      </div>
+      <hr class="stylized-line" />
+      <div class="section">
+        <h3>2. Número máximo de elementos na fila</h3>
+        {{ fig3|safe }}
+      </div>
+      <hr class="stylized-line" />
+      <div class="section">
+        <h3>
+          3. Média de elementos no sistema (\(E[N]\)) & Tempo médio de espera
+          (\(E[W]\))
+        </h3>
+        {{ fig4|safe }}
+
+        <p>Calcule \(E[N]\) e \(E[W]\) através das fórmulas:</p>
+        <div class="validate">
+          <div class="left_params">
+            <div class="input">
+              <label for="e_rho"> (ρ):</label>
+              <input
+                type="number"
+                id="e_rho"
+                placeholder="ρ"
+                min="0"
+                step="0.1"
+              />
+            </div>
+
+            <div class="input">
+              <label for="e_mu"> (μ):</label>
+              <input
+                type="number"
+                id="e_mu"
+                placeholder="μ"
+                min="0"
+                step="0.1"
+              />
+            </div>
+
+            <div class="input">
+              <label for="e_lambda"> (λ):</label>
+              <input
+                type="number"
+                id="e_lambda"
+                placeholder="λ"
+                min="0"
+                step="0.1"
+              />
+            </div>
+          </div>
+
+          <div class="calc">
+            <div class="conta">
+              <p>$$E[N] = \frac{\rho}{1-\rho}$$</p>
+              <p id="e_res"></p>
+            </div>
+            <button onclick="calcularL()">Calcular</button>
+          </div>
+
+          <div class="calc">
+            <div class="conta">
+              <p>$$E[W] = \frac{1}{\mu - \lambda}$$</p>
+              <p id="w_res"></p>
+            </div>
+            <button onclick="calcularW()">Calcular</button>
+          </div>
+        </div>
+      </div>
+      <hr class="stylized-line" />
+      <div class="section">
+        <h3>
+          4. Taxa de chegada de elementos no sistema \(\left(\lambda\right)\) &
+          Taxa de atendimento \(\left(\mu\right)\)
+        </h3>
+        <div class="rate">
+          <p>$$\lambda = \frac{1}{\text{Tempo médio entre as chegadas}}$$</p>
+          <p>$$\mu = \frac{1}{\text{Tempo médio de atendimento}}$$</p>
+        </div>
+
+        {{ fig5|safe }}
+      </div>
+      <hr class="stylized-line" />
+      <div class="section">
+        <h3>5. Erro de Little</h3>
+        <p>Lei de Little: $$E[N] = \lambda \cdot E[W]$$</p>
+        <p>
+          $$\text{Erro de Little} = \left| E[N] - \lambda \cdot E[W] \right|$$
+        </p>
+        {{ fig6|safe }}
+
+
+      </div>
+      <hr class="stylized-line" />
+      <div class="section">
+        <h3>Referências</h3>
+        <ol>
+          <li>
+            <p>
+              ROSS, S. M., <em>Simulation</em>. 4ª ed. San Diego: Academic
+              Press, 2006.
+            </p>
+          </li>
+          <li>
+            <p>
+              ALLEN, Arnold O.
+              <em
+                >Probability, statistics, and queueing theory: with computer
+                science applications</em
+              >. 2. ed. San Diego: Academic Press, 1990.
+            </p>
+          </li>
+        </ol>
+      </div>
+
+      <hr class="stylized-line" />
+
+      <footer>
+        <p>
+          &copy; 2024 Otávio Brito &
+          <a href="https://github.com/aliciagarnier" target="_blank"
+            >Alicia Garnier</a
+          >.
+        </p>
+        <a href="https://github.com/otaviofbrito/discrete-time-event-simulation"
+          >Github</a
+        >
+      </footer>
+    </div>
+  </body>
+</html>
