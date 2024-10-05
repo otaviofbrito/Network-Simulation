@@ -19,6 +19,8 @@ double gera_tempo(double l);
 
 int gerar_pacote();
 
+double gera_tempo_transmissao(double link);
+
 Metrics *new_metrics();
 
 void update_metrics(Metrics *m, Little *en, Little *ew_chegadas, Little *ew_saidas, double soma_ocupacao, double tempo_decorrido);

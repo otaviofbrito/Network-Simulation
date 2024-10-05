@@ -7,29 +7,29 @@
 #include "metrics.h"
 #include "little.h"
 
+#define INTERVALO 100.0
 #define CSV_PATH "data/output.csv"
 
 int main(int argc, char *argv[])
 {
   if (argc != 5)
   {
-    printf("Usage: %s seed parametro_chega parametro_saida tempo_simulacao\n", argv[0]);
+    printf("Usage: %s seed parametro_chegada tamanho_link tempo_simulacao\n", argv[0]);
     return EXIT_FAILURE;
   }
 
   unsigned int seed = atoi(argv[1]);
   double parametro_chegada = atof(argv[2]);
-  double parametro_saida = atof(argv[3]);
+  double tamanho_link = atof(argv[3]);
   double tempo_simulacao = atof(argv[4]);
 
   const double param1 = parametro_chegada;
-  const double param2 = parametro_saida;
+  const double param2 = tamanho_link;
 
   srand(seed);
 
   parametro_chegada = 1.0 / parametro_chegada;
-  parametro_saida = 1.0 / parametro_saida;
-
+  
   double tempo_decorrido = 0.0;
 
   double tempo_chegada = gera_tempo(parametro_chegada);
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
   Metrics *metrics = new_metrics();
 
   // Tempo inicial de calculo
-  double tempo_calc = 100.0;
+  double tempo_calc = INTERVALO;
 
   // Criar arquivo csv
   FILE *file = fopen(CSV_PATH, "a");
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     {
       if (!fila)
       {
-        tempo_saida = tempo_decorrido + gera_tempo(parametro_saida);
+        tempo_saida = tempo_decorrido + gera_tempo_transmissao(tamanho_link);
         soma_ocupacao += tempo_saida - tempo_decorrido;
       }
       fila++;
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
       tempo_saida = DBL_MAX;
       if (fila)
       {
-        tempo_saida = tempo_decorrido + gera_tempo(parametro_saida);
+        tempo_saida = tempo_decorrido + gera_tempo_transmissao(tamanho_link);
         soma_ocupacao += tempo_saida - tempo_decorrido;
       }
 
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
               metrics->little_error, param1, param2);
 
       // Atualizar o próximo tempo para calcular métricas
-      tempo_calc += 100.0;
+      tempo_calc += INTERVALO;
     }
   }
   fclose(file);

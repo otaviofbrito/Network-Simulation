@@ -72,3 +72,9 @@ int gerar_pacote()
     return 1500;
   }
 }
+
+double gera_tempo_transmissao(double link)
+{
+  // L/R
+  return gerar_pacote() / link;
+}
