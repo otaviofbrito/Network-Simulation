@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Report</title>
-    <link rel="stylesheet" href="utils/template.css" />
+    <link rel="stylesheet" href="/report/utils/template.css" />
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script
@@ -12,7 +12,7 @@
       async
       src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
     ></script>
-    <script src="utils/script.js"></script>
+    <script src="/report/utils/template.js"></script>
   </head>
   <body>
     <div class="container">
@@ -64,7 +64,7 @@
           >
           para a geração dos pacotes conforme as proporções descritas:
         </p>
-        <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fotaviofbrito%2Fdiscrete-time-event-simulation%2Fblob%2Fb6a5144b507725ae5eb45b6769fb626d545aee8c%2Fc_project%2Fsrc%2Fmetrics.c%23L23-L28&style=github&type=code&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
+        <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fotaviofbrito%2FNetwork-Simulation%2Fblob%2F21133291a92cfe114a1957cae289e63a558d048a%2Fc_project%2Finclude%2Fmetrics.c%23L55-L74&style=github&type=code&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
         
         <div>
           <h3>Tamanho Médio dos Pacotes (\(L\))</h3>
@@ -86,7 +86,7 @@
             <li>\(\rho_3\) = 95%</li>
             <li>\(\rho_4\) = 99%</li>
           </ul>
-          <p>Assim, devemos calcular o tamanho do Link R previamente para que ao final da execucao esses cenarios sejam satisfeitos</p>
+          <p>Assim, devemos calcular o tamanho do link (\(R\)) previamente para que ao final da execução esses cenários sejam satisfeitos</p>
         </div>
        
         
@@ -99,16 +99,16 @@
             Manipulando a fórmula da utilização:
             $$\mu = \frac{\lambda}{\rho}$$
             $$\frac{1}{\mu} = \frac{\rho}{\lambda}$$
-            Substituindo:
+            Substituindo \(1/\mu\) por \(L/R\):
             $$\frac{\rho}{\lambda}= \frac{L}{R}$$
-            Portanto, o tamanho do link em bytes/segundo pode ser calculado como:
+            Portanto, o tamanho do link em <b>bytes/segundo</b> pode ser calculado como:
             <p class="tex_result">$$R = \frac{L \cdot \lambda}{\rho}$$</p>
           </p>
         </div>
 
         <div>
           <h3>Cálculo da Capacidade do Link para as Diversas Ocupações</h3>
-          <p>Com a fórmula obtida, podemos calcular a capacidade do link previamente para diferentes ocupações</p>
+          <p>Com a fórmula obtida, podemos calcular a capacidade do link previamente para diferentes ocupações.</p>
           <p>Temos que:
             <ul>
               <li>\(\lambda = 100 \ \text{pcts/s}\)</li>
@@ -140,7 +140,7 @@
       </div>
       <div class="section">
         <h3>Resultado das Simulações</h3>
-        {{ fig1|safe }}
+        {{ fig2|safe }}
       </div>
       <hr class="stylized-line" />
       <div class="section">
@@ -165,45 +165,69 @@
         o desempenho do sistema.
         <h3>1. Utilização/Ocupação (\(\rho\))</h3>
 
-        {{ fig2|safe }}
-
-        <div class="calc">
-          <h3>Valide a utilização:</h3>
-          <div class="conta">
-            \(\rho\) =
-            <div class="left">
-              <div class="input">
-                <label for="util_lambda">Taxa de chegada (λ):</label>
-                <input
-                  type="number"
-                  id="util_lambda"
-                  placeholder="λ"
-                  min="0"
-                  step="0.1"
-                />
-              </div>
-
-              <div>
-                <hr />
-                <div class="input">
-                  <label for="util_mu">Taxa de serviço (μ):</label>
-                  <input
-                    type="number"
-                    id="util_mu"
-                    placeholder="μ"
-                    min="0"
-                    step="0.1"
-                  />
-                </div>
-              </div>
+        {{ fig1|safe }}
+        <div>
+          <h3>Validação da utilização</h3>
+          <div>
+            A utilização é dada por:
+            $$\rho = \frac{\lambda}{\mu} $$
+            Sabendo que o tempo médio de serviço(atraso de transmissão do roteador) é definido por \(L/R\), podemos substituir \(1/\mu\):
+            $$\frac{1}{\mu}= \frac{L}{R} $$
+            Desse modo, a fórmula da utilização pode ser representada da seguinte maneira:
+            <p class="tex_result">$$\rho = \frac{\lambda \cdot L}{R}$$</p>
+            
+          </div>
+        </div>
+        <div class="validate">
+          <div class="left_params">
+            <div class="input">
+              <label for="ocup_lambda"> \(\lambda\):</label>
+              <input
+                type="number"
+                id="ocup_lambda"
+                placeholder="pcts/s"
+                value="100"
+                min="0"
+                step="0.05"
+              />
             </div>
-            <div class="right">
-              <p id="util_res"></p>
+
+            <div class="input">
+              <label for="ocup_l"> \(L\):</label>
+              <input
+                type="number"
+                id="ocup_l"
+                placeholder="bytes"
+                value="441"
+                min="0"
+                step="1"
+              />
+            </div>
+
+            <div class="input">
+              <label for="ocup_r"> \(R\):</label>
+              <input
+              type="number"
+              id="ocup_r"
+              placeholder="(bytes/s)"
+              value="73500"
+              min="0"
+              step="0.1"
+            />
             </div>
           </div>
 
-          <button onclick="calcularOcupacao()">Calcular</button>
+          <div class="calc">
+            <div class="conta">
+              <p>$$\rho = \frac{\lambda \cdot L}{R}$$</p>
+              <p id="ocup_res"></p>
+            </div>
+            <button onclick="calcular_rho()">Calcular</button>
+          </div>
+
+        
         </div>
+        
       </div>
       <hr class="stylized-line" />
       <div class="section">
@@ -222,37 +246,53 @@
         <div class="validate">
           <div class="left_params">
             <div class="input">
-              <label for="e_rho"> (ρ):</label>
+              <label for="e_rho"> \(\rho\):</label>
               <input
                 type="number"
                 id="e_rho"
                 placeholder="ρ"
+                value="0.6"
                 min="0"
-                step="0.1"
+                step="0.05"
               />
             </div>
 
             <div class="input">
-              <label for="e_mu"> (μ):</label>
-              <input
-                type="number"
-                id="e_mu"
-                placeholder="μ"
-                min="0"
-                step="0.1"
-              />
-            </div>
-
-            <div class="input">
-              <label for="e_lambda"> (λ):</label>
+              <label for="e_lambda"> \(\lambda\):</label>
               <input
                 type="number"
                 id="e_lambda"
-                placeholder="λ"
+                placeholder="pcts/s"
+                value="100"
                 min="0"
                 step="0.1"
               />
             </div>
+
+            <div class="input">
+              <label for="e_l"> \(L\):</label>
+              <input
+                type="number"
+                id="e_l"
+                placeholder="bytes"
+                value="441"
+                min="0"
+                step="1"
+              />
+            </div>
+            <div class="input">
+              <label for="e_r"> \(R\):</label>
+              <input
+                type="number"
+                id="e_r"
+                placeholder="bytes/s"
+                value="73500"
+                min="0"
+                step="0.1"
+              />
+            </div>
+
+           
           </div>
 
           <div class="calc">
@@ -260,15 +300,15 @@
               <p>$$E[N] = \frac{\rho}{1-\rho}$$</p>
               <p id="e_res"></p>
             </div>
-            <button onclick="calcularL()">Calcular</button>
+            <button onclick="calcular_EN()">Calcular</button>
           </div>
 
           <div class="calc">
             <div class="conta">
-              <p>$$E[W] = \frac{1}{\mu - \lambda}$$</p>
+              <p>$$E[W] = \frac{L}{R - L \cdot \lambda}$$</p>
               <p id="w_res"></p>
             </div>
-            <button onclick="calcularW()">Calcular</button>
+            <button onclick="calcular_EW()">Calcular</button>
           </div>
         </div>
       </div>
