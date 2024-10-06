@@ -1,0 +1,30 @@
+name: Generate Web page and Deploy
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up Environment
+      run: sudo apt-get update && sudo apt-get install -y make python3 pip gcc
+
+    - name: Build project
+      run: make build
+
+    - name: Generate Report
+      run: make auto
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./report
+        publish_branch: gh-pages  
