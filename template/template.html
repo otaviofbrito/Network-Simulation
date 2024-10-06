@@ -17,21 +17,134 @@
   <body>
     <div class="container">
       <header>
+        <div class="nav">
+          <a
+            href="https://otaviofbrito.github.io/discrete-time-event-simulation/report.html"
+          >
+            < Fila M/M/1</a
+          >
+          <a href="">Simulação Pt. 2 > </a>
+        </div>
         <h1>Simulação via Eventos Discretos</h1>
         <p class="subtitle">Discrete Time Event Simulation</p>
       </header>
       <div class="section">
-        <h2>Simulação de Rede Pt. 1</h2>
+        <h2>Simulação de Rede Pt. 1 (Navegação na Web)</h2>
+        <p>
+          Para simular um roteador recebendo pacotes de navegação web, a simulação envolve a chegada de pacotes seguindo uma
+          <b>distribuição exponencial</b>, semelhante à fila
+          <a href="https://otaviofbrito.github.io/discrete-time-event-simulation/report.html" target="_blank">M/M/1</a>. No entanto, o tempo médio de
+          atendimento é calculado com base nos tamanhos dos pacotes que chegam
+          (\(L\)) em <b>bytes</b> e na capacidade de atendimento do link (\(R\)) em <b>bytes/s</b>,
+          seguindo a fórmula: $$t_{atendimento} =\frac{L}{R}$$.
+        </p>
+        
+      </div>
+      <hr class="stylized-line" />
+      <div class="section">
+        <h2>Cenário</h2>
+        <p>
+          No cenário simulado, utilizou-se a taxa de chegada dos pacotes (\(\lambda\)) como
+          <b>100 pacotes/segundo</b>, e a geração dos pacotes teve o objetivo de
+          simular um comportamento de navegação na web, seguindo as seguintes
+          proporções:
+        </p>
+        
+        <ul>
+          <li>50% dos pacotes têm tamanho de <b>550 bytes</b></li>
+          <li>40% dos pacotes têm tamanho de <b>40 bytes</b></li>
+          <li>10% dos pacotes têm tamanho de <b>1500 bytes</b></li>
+        </ul>
+        <p>
+          Foi utilizado uma
+          <a
+            href="https://github.com/otaviofbrito/Network-Simulation/blob/074190374e4b81c0ab2a8430abbdc45445bedef5/c_project/include/metrics.c#L55C5-L55C17"
+            target="_blank"
+            >função aleatória ponderada</a
+          >
+          para a geração dos pacotes conforme as proporções descritas:
+        </p>
+        <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fotaviofbrito%2Fdiscrete-time-event-simulation%2Fblob%2Fb6a5144b507725ae5eb45b6769fb626d545aee8c%2Fc_project%2Fsrc%2Fmetrics.c%23L23-L28&style=github&type=code&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
+        
+        <div>
+          <h3>Tamanho Médio dos Pacotes (\(L\))</h3>
+          <p>O tamanho médio dos pacotes pode ser calculado com base nas proporções fornecidas:
+            $$L = (0.5 \times 550) + (0.4 \times 40) + (0.1 \times 1500)$$
+            $$L = 441 \ \text{bytes}$$
+          </p>
+        </div>
+
+        <div>
+          <h3>Ocupação</h3>
+          <p>
+            <b>Restrição imposta:</b><br>
+            A ocupação do link deve obedecer os seguintes cenários:
+        </p>
+          <ul class="inline">
+            <li>\(\rho_1\) = 60%</li>
+            <li>\(\rho_2\) = 80%</li>
+            <li>\(\rho_3\) = 95%</li>
+            <li>\(\rho_4\) = 99%</li>
+          </ul>
+          <p>Assim, devemos calcular o tamanho do Link R previamente para que ao final da execucao esses cenarios sejam satisfeitos</p>
+        </div>
+       
+        
+        <div>
+          <h3>Tamanho do Link (\(R\))</h3>
+          <p>
+            A fórmula da utilização é dada por:
+            $$\rho = \frac{\lambda}{\mu}$$
+            $$\text{Tempo médio de atendimento} = \frac{1}{\mu} = \frac{L}{R}$$
+            Manipulando a fórmula da utilização:
+            $$\mu = \frac{\lambda}{\rho}$$
+            $$\frac{1}{\mu} = \frac{\rho}{\lambda}$$
+            Substituindo:
+            $$\frac{\rho}{\lambda}= \frac{L}{R}$$
+            Portanto, o tamanho do link em bytes/segundo pode ser calculado como:
+            <p class="tex_result">$$R = \frac{L \cdot \lambda}{\rho}$$</p>
+          </p>
+        </div>
+
+        <div>
+          <h3>Cálculo da Capacidade do Link para as Diversas Ocupações</h3>
+          <p>Com a fórmula obtida, podemos calcular a capacidade do link previamente para diferentes ocupações</p>
+          <p>Temos que:
+            <ul>
+              <li>\(\lambda = 100 \ \text{pcts/s}\)</li>
+              <li>\(L_{médio} = 441\ \text{bytes}\)</li>
+              <li>\(\rho = \{0.6, 0.8, 0.95, 0.99\}\)</li>
+            </ul>
+          </p>
+          <ol>
+            <li>
+              60% de ocupação:
+              $$R_{60\%} = \frac{441 \cdot 100}{0.6} = 73500 \ \text{bytes/s}$$
+            </li>
+            <li>
+              80% de ocupação:
+              $$R_{80\%} = \frac{441 \cdot 100}{0.8} = 55125 \ \text{bytes/s}$$
+            </li>
+            <li>
+              95% de ocupação:
+              $$R_{95\%} = \frac{441 \cdot 100}{0.95} \approx 46421 \ \text{bytes/s}$$
+            </li>
+            <li>
+              99% de ocupação:
+              $$R_{99\%} = \frac{441 \cdot 100}{0.99} \approx 44545 \ \text{bytes/s}$$
+            </li>
+          </ol>
+        </div>
+        
+    
+      </div>
+      <div class="section">
+        <h3>Resultado das Simulações</h3>
+        {{ fig1|safe }}
       </div>
       <hr class="stylized-line" />
       <div class="section">
         <h2>Medidas de Desempenho</h2>
-        <p>
-          O modelo é considerado estável somente se \(\lambda < \mu\). Se, em
-          média, as chegadas ocorrem mais rapidamente que as conclusões dos
-          serviços, a fila se tornará indefinidamente longa.
-        </p>
-
         <p>
           A seguir foram calculadas medidas de desempenho com base em cada
           simulação realizada, cada gráfico conta com uma legenda onde estão
@@ -40,22 +153,16 @@
         <ul>
           <li>
             <b
-              >(P1: Tempo médio entre as chegadas escolhido, P2: Tempo médio de
-              atendimento escolhido)</b
+              >(P1: Tempo médio entre as chegadas de pacotes, P2: Tamanho do
+              link)</b
             >
           </li>
+          <li><b>Semente aleatória = 100</b></li>
+          <li><b>Tempo de simulação = 100.000 segundos</b></li>
         </ul>
 
         Em algumas medidas, existem campos que podem ser utilzados para validar
         o desempenho do sistema.
-      </div>
-      <hr class="stylized-line" />
-      <div class="section">
-        <h3>Tabela</h2>
-          {{ fig1|safe }}
-      </div>
-      <hr class="stylized-line" />
-      <div class="section">
         <h3>1. Utilização/Ocupação (\(\rho\))</h3>
 
         {{ fig2|safe }}
@@ -186,8 +293,6 @@
           $$\text{Erro de Little} = \left| E[N] - \lambda \cdot E[W] \right|$$
         </p>
         {{ fig6|safe }}
-
-
       </div>
       <hr class="stylized-line" />
       <div class="section">

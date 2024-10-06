@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 {
   if (argc != 5)
   {
-    printf("Usage: %s seed parametro_chegada tamanho_link tempo_simulacao\n", argv[0]);
+    printf("Usage: %s seed taxa_chegada tamanho_link tempo_simulacao\n", argv[0]);
     return EXIT_FAILURE;
   }
 
@@ -27,8 +27,6 @@ int main(int argc, char *argv[])
   const double param2 = tamanho_link;
 
   srand(seed);
-
-  parametro_chegada = 1.0 / parametro_chegada;
   
   double tempo_decorrido = 0.0;
 

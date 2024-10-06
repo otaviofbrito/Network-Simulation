@@ -60,12 +60,12 @@ def create_table(dfs):
                 header=dict(
                     values=["Tempo", "Máximo de<br>Fila", "Ocupação",
                             "E[N]", "E[W]", "Lambda",
-                            "Mu", "Erro de<br>Little"],
+                            "Mu", "Erro de<br>Little", "Taxa de<br>Chegada<br>(pcts/s)", "Tamanho do<br>Link<br>(bytes/s)"],
                     font=dict(size=10),
                     align="left"
                 ),
                 cells=dict(
-                    values=[df[k].tolist() for k in df.columns[:-3]],
+                    values=[df[k].tolist() for k in df.columns[:-1]],
                     align="left"
                 )
             )
@@ -79,14 +79,15 @@ def create_table(dfs):
                     label=f"Tabela {i + 1}",
                     method="update",
                     args=[
-                        {"visible": [False] * len(dfs), "visible": [i == j for j in range(len(dfs))]}]
+                        {"visible": [False] * len(dfs), "visible": [i == j for j in range(len(dfs))]},
+                        {"title.text": f"Tabela {dfs[i].iloc[0]['Fonte']}"}]
                 ) for i in range(len(dfs))],
                 direction="down",
-                showactive=True,
+                showactive=True
             )
         ],
         showlegend=False,
-        title_text="Tabelas",
+        title_text=f"Tabela {dfs[0].iloc[0]['Fonte']}"
     )
 
     # Inicialmente, mostra apenas a primeira tabela

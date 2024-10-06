@@ -183,3 +183,13 @@ div.rate {
   gap: 2rem;
   justify-content: center;
 }
+
+div.nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+ul.inline {
+  display: flex;
+  
+}
