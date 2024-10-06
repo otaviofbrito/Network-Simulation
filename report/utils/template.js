@@ -38,3 +38,15 @@ function calcular_EW() {
   const e_w = (L / (R - L * lambda)).toFixed(3)
   document.getElementById('w_res').innerText = ` = ${e_w}`
 }
+
+function calcular_mu() {
+  const L = parseFloat(document.getElementById('mu_l').value)
+  const R = parseFloat(document.getElementById('mu_r').value)
+
+  if (isNaN(L) || isNaN(R)) {
+    document.getElementById('mu_res').innerText = ' = Inválido!'
+    return
+  }
+  const mu = (R/L).toFixed(3)
+  document.getElementById('mu_res').innerText = ` = ${mu}`
+}

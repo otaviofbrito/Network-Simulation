@@ -156,6 +156,8 @@ p {
 
 div.left_params {
   display: grid;
+  justify-items: end;
+  align-content: space-evenly;
 }
 
 p.tex_result {
