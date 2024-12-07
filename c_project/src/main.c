@@ -9,6 +9,12 @@
 
 #define INTERVALO 100.0
 #define CSV_PATH "c_project/data/output.csv"
+#define TEMPO_ENTRE_CHAMADA 30
+#define TEMPO_CHAMADA_DURACAO 60
+#define TEMPO_PACOTES_CHAMADA 0.02
+#define TAMANHO_PACOTE 160
+#define TEMPO_NOVO_PACOTE 1.0/50
+
 
 int main(int argc, char *argv[])
 {
@@ -27,11 +33,14 @@ int main(int argc, char *argv[])
   const double param2 = tamanho_link;
 
   srand(seed);
-  
+
   double tempo_decorrido = 0.0;
 
-  double tempo_chegada = gera_tempo(parametro_chegada);
-  double tempo_saida = DBL_MAX;
+  // Chamadas
+  double tempo_inicio_chamada = gera_tempo(TEMPO_ENTRE_CHAMADA);
+  double tempo_chegada_pacote_chamada = DBL_MAX;
+  double tempo_saida_pacote_chamada = DBL_MAX;
+  double tempo_fim_chamada = DBL_MAX;
 
   unsigned long int fila = 0;
   unsigned long int fila_max = 0;
@@ -60,19 +69,20 @@ int main(int argc, char *argv[])
 
   while (tempo_decorrido <= tempo_simulacao)
   {
-    tempo_decorrido = min(min(tempo_chegada, tempo_saida), tempo_calc);
+    tempo_decorrido = min(min(min(min(tempo_inicio_chamada, tempo_fim_chamada),tempo_chegada_pacote_chamada),tempo_saida_pacote_chamada),tempo_calc);
 
-    if (tempo_decorrido == tempo_chegada)
+    if (tempo_decorrido == tempo_inicio_chamada)
     {
       if (!fila)
       {
-        tempo_saida = tempo_decorrido + gera_tempo_transmissao(tamanho_link);
-        soma_ocupacao += tempo_saida - tempo_decorrido;
+        tempo_fim_chamada = tempo_decorrido + gera_tempo(TEMPO_CHAMADA_DURACAO);
+        soma_ocupacao += tempo_fim_chamada - tempo_decorrido;
       }
       fila++;
       fila_max = fila > fila_max ? fila : fila_max;
 
-      tempo_chegada = tempo_decorrido + gera_tempo(parametro_chegada);
+      tempo_inicio_chamada = tempo_decorrido + gera_tempo(TEMPO_ENTRE_CHAMADA);
+      tempo_chegada_pacote_chamada = tempo_decorrido + gera_tempo(TEMPO_NOVO_PACOTE); // inicio de chamada
 
       // Little
       littles_calc(en, tempo_decorrido);
@@ -80,14 +90,48 @@ int main(int argc, char *argv[])
       en->num_eventos++;
       ew_chegadas->num_eventos++;
     }
-    else if (tempo_decorrido == tempo_saida)
+    else if (tempo_decorrido == tempo_fim_chamada)
     {
       fila--;
-      tempo_saida = DBL_MAX;
+      tempo_fim_chamada = DBL_MAX;
       if (fila)
       {
-        tempo_saida = tempo_decorrido + gera_tempo_transmissao(tamanho_link);
-        soma_ocupacao += tempo_saida - tempo_decorrido;
+        tempo_fim_chamada = tempo_decorrido + gera_tempo(TEMPO_CHAMADA_DURACAO);
+        soma_ocupacao += tempo_fim_chamada - tempo_decorrido;
+      }
+
+      // Little
+      littles_calc(en, tempo_decorrido);
+      littles_calc(ew_saidas, tempo_decorrido);
+      en->num_eventos--;
+      ew_saidas->num_eventos++;
+    }
+    else if (tempo_decorrido == tempo_chegada_pacote_chamada)
+    {
+      if (!fila)
+      {
+        tempo_saida_pacote_chamada = tempo_decorrido + TAMANHO_PACOTE/tamanho_link;
+        soma_ocupacao += tempo_saida_pacote_chamada - tempo_decorrido;
+      }
+      fila++;
+      fila_max = fila > fila_max ? fila : fila_max;
+
+      tempo_chegada_pacote_chamada = tempo_decorrido + gera_tempo(TEMPO_NOVO_PACOTE); // inicio de chamada
+
+      // Little
+      littles_calc(en, tempo_decorrido);
+      littles_calc(ew_chegadas, tempo_decorrido);
+      en->num_eventos++;
+      ew_chegadas->num_eventos++;
+    }
+    else if (tempo_decorrido == tempo_saida_pacote_chamada)
+    {
+      fila--;
+      tempo_saida_pacote_chamada = DBL_MAX;
+      if (fila)
+      {
+        tempo_saida_pacote_chamada = tempo_decorrido + TAMANHO_PACOTE/tamanho_link;
+        soma_ocupacao += tempo_saida_pacote_chamada - tempo_decorrido;
       }
 
       // Little
@@ -97,7 +141,7 @@ int main(int argc, char *argv[])
       ew_saidas->num_eventos++;
     }
     // Calcula métricas
-    else
+    else 
     {
       // atualiza os 3 gráficos
       littles_calc(en, tempo_decorrido);
