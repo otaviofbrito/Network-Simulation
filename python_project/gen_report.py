@@ -36,8 +36,10 @@ def render_to_html(figs):
         "fig1": figs[0].to_html(full_html=False, include_plotlyjs='cdn'),
         "fig2": figs[1].to_html(full_html=False, include_plotlyjs='cdn'),
         "fig3": figs[2].to_html(full_html=False, include_plotlyjs='cdn'),
-        "fig4": figs[3].to_html(full_html=False, include_plotlyjs='cdn'),
-        "fig5": figs[4].to_html(full_html=False, include_plotlyjs='cdn')}
+        "figx": figs[3].to_html(full_html=False, include_plotlyjs='cdn'),
+        "figy": figs[4].to_html(full_html=False, include_plotlyjs='cdn'),
+        "fig4": figs[5].to_html(full_html=False, include_plotlyjs='cdn'),
+        "fig5": figs[6].to_html(full_html=False, include_plotlyjs='cdn')}
 
     # Render template with multiple plots
     with open(output_html_path, "w", encoding="utf-8") as output_file:
@@ -114,11 +116,29 @@ def generate_report():
     )
     figs.append(fig)
 
-    fig = px.line(df, x='Time', y=[
-                        "E[N]", "E[W]"], color='Fonte', title='E[N] e E[W]')
+    fig = px.line(df, x='Time', y=[ "E[N]",
+                        "E[W]"], color='Fonte', title='E[N] & E[W]')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='E[N] & E[W]',
+        legend_title='Parâmetros'
+    )
+    figs.append(fig)
+
+
+    fig = px.line(df, x='Time', y=[
+                        "E[N]"], color='Fonte', title='E[N]')
+    fig.update_layout(
+        xaxis_title='Tempo',
+        yaxis_title='E[N]',
+        legend_title='Parâmetros'
+    )
+    figs.append(fig)
+
+    fig = px.line(df, x='Time', y=["E[W]"], color='Fonte', title='E[W]')
+    fig.update_layout(
+        xaxis_title='Tempo',
+        yaxis_title='E[W]',
         legend_title='Parâmetros'
     )
     figs.append(fig)

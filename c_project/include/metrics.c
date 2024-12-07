@@ -75,6 +75,6 @@ int gerar_pacote()
 
 double gera_tempo_transmissao(double link)
 {
-  // L/R
+  // Tempo de transmissao = L/R
   return gerar_pacote() / link;
 }

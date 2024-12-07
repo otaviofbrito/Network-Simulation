@@ -2,7 +2,7 @@
 
 ![GitHub Actions](https://github.com/otaviofbrito/Network-Simulation/actions/workflows/makefile.yml/badge.svg)
 
-:page_with_curl: Checkout [Github Pages](https://otaviofbrito.github.io/discrete-time-event-simulation/report.html).
+:page_with_curl: Checkout [Github Pages](https://otaviofbrito.github.io/Network-Simulation/report.html).
 
 
 ### Pre-Requisites
