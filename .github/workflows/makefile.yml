@@ -1,4 +1,4 @@
-name: Generate Web page and Deploy
+name: Generate Web page and Deploy - 2
 
 on:
   push:
