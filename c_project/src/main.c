@@ -10,6 +10,7 @@
 #include "event.h"
 
 #define INTERVALO 100.0
+#define MAX_HEAP_SIZE 5000
 #define CSV_PATH "c_project/data/output.csv"
 
 int main(int argc, char *argv[])
@@ -30,7 +31,7 @@ int main(int argc, char *argv[])
   double tempo_simulacao = atof(argv[7]);
 
   srand(seed);
-  MinHeap *heap = createMinHeap(5000);
+  MinHeap *heap = createMinHeap(MAX_HEAP_SIZE);
 
   double tempo_decorrido = 0.0;
   double tempo_saida = 0.0;
@@ -60,7 +61,7 @@ int main(int argc, char *argv[])
   Metrics *metrics_call = new_metrics();
 
   insertNewEvent(CHEGADA_PACOTE_WEB, gera_tempo(lambda_web), heap);
-  insertNewEvent(COLETA, 100.0, heap);
+  insertNewEvent(COLETA, INTERVALO, heap);
   insertNewEvent(CHEGADA_PACOTE_CALL, gera_tempo(lambda_call), heap);
 
   // Criar arquivo csv
@@ -193,7 +194,7 @@ int main(int argc, char *argv[])
               mu_call, lambda_pacote_call, tamanho_link, "CALL");
 
       // Atualizar o próximo tempo para calcular métricas
-      insertNewEvent(COLETA, tempo_decorrido + 100.00, heap);
+      insertNewEvent(COLETA, tempo_decorrido + INTERVALO, heap);
       break;
     }
   }

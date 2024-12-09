@@ -36,10 +36,15 @@ def render_to_html(figs):
         "fig1": figs[0].to_html(full_html=False, include_plotlyjs='cdn'),
         "fig2": figs[1].to_html(full_html=False, include_plotlyjs='cdn'),
         "fig3": figs[2].to_html(full_html=False, include_plotlyjs='cdn'),
-        "figx": figs[3].to_html(full_html=False, include_plotlyjs='cdn'),
-        "figy": figs[4].to_html(full_html=False, include_plotlyjs='cdn'),
-        "fig4": figs[5].to_html(full_html=False, include_plotlyjs='cdn'),
-        "fig5": figs[6].to_html(full_html=False, include_plotlyjs='cdn')}
+        "fig4": figs[3].to_html(full_html=False, include_plotlyjs='cdn'),
+        "fig5": figs[4].to_html(full_html=False, include_plotlyjs='cdn'),
+        "fig6": figs[5].to_html(full_html=False, include_plotlyjs='cdn'),
+        "fig7": figs[6].to_html(full_html=False, include_plotlyjs='cdn'),
+        "fig8": figs[7].to_html(full_html=False, include_plotlyjs='cdn'),
+        "fig9": figs[8].to_html(full_html=False, include_plotlyjs='cdn'),
+        "fig10": figs[9].to_html(full_html=False, include_plotlyjs='cdn'),
+        "fig11": figs[10].to_html(full_html=False, include_plotlyjs='cdn'),
+        "fig12": figs[11].to_html(full_html=False, include_plotlyjs='cdn')}
 
     # Render template with multiple plots
     with open(output_html_path, "w", encoding="utf-8") as output_file:
@@ -50,12 +55,12 @@ def render_to_html(figs):
 # "Time,Fila Max,Ocupacao,E[N],E[W],Lambda,Mu,Erro de Little,Lambda_Web, Lambda_Call, Mu_Call, Lambda_Pacote_Call, Link, Tipo"
 
 
-def create_table(dfs, columns, _values):
+def create_table(dfs, columns, _values, _type):
     fig = go.Figure()
 
     # Adiciona uma tabela para cada dataframe
     for i, df in enumerate(dfs):
-        df = df.loc[df["Tipo"] == "WEB"]
+        df = df.loc[df["Tipo"] == _type]
         df = df[columns]
         fig.add_trace(
             go.Table(
@@ -117,19 +122,41 @@ def generate_report():
         'Link': 'Tamanho do<br>Link<br>(bytes/s)',
         'Tipo': 'Tipo<br>Do<br>Pacote'
     }
-    figs.append(create_table(dfs, list(dict_web.keys()), list(dict_web.values())))
+    # FIG 1 - Tabela 1 CALL+WEB
+    figs.append(create_table(dfs, list(dict_web.keys()),
+                list(dict_web.values()), "WEB"))
 
-    fig = px.line(df, x='Time', y="Ocupacao",
+    dict_call = {
+        'Time': 'Tempo',
+        'E[N]': 'E[N]',
+        'E[W]': 'E[W]',
+        'Lambda': 'Lambda',
+        'Mu': 'Mu',
+        'Erro de Little': 'Erro de<br>Little',
+        'Link': 'Tamanho do<br>Link<br>(bytes/s)',
+        'Tipo': 'Tipo<br>Do<br>Pacote'
+    }
+    # FIG 2 - Tabela 2 CALL
+    figs.append(create_table(dfs, list(dict_call.keys()),
+                list(dict_call.values()), "CALL"))
+
+    df_web = df.loc[df["Tipo"] == "WEB"]
+    df_call = df.loc[df["Tipo"] == "WEB"]
+
+    # FIG 3 - GRAFICO 1 WEB
+    fig = px.line(df_web, x='Time', y="Ocupacao",
                   color='Fonte', title='Utilização (Ocupação)')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='Ocupação',
         legend_title='Parâmetros'
     )
+
     figs.append(fig)
 
-    fig = px.line(df, x='Time', y=["E[N]",
-                                   "E[W]"], color='Fonte', title='E[N] & E[W]')
+    # FIG 4 - GRAFICO 2 WEB
+    fig = px.line(df_web, x='Time', y=["E[N]",
+                                       "E[W]"], color='Fonte', title='E[N] & E[W]')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='E[N] & E[W]',
@@ -137,8 +164,9 @@ def generate_report():
     )
     figs.append(fig)
 
-    fig = px.line(df, x='Time', y=[
-                        "E[N]"], color='Fonte', title='E[N]')
+    # FIG 5 - GRAFICO 3 WEB
+    fig = px.line(df_web, x='Time', y=[
+        "E[N]"], color='Fonte', title='E[N]')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='E[N]',
@@ -146,7 +174,8 @@ def generate_report():
     )
     figs.append(fig)
 
-    fig = px.line(df, x='Time', y=["E[W]"], color='Fonte', title='E[W]')
+    # FIG 6 - GRAFICO 4 WEB
+    fig = px.line(df_web, x='Time', y=["E[W]"], color='Fonte', title='E[W]')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='E[W]',
@@ -154,7 +183,37 @@ def generate_report():
     )
     figs.append(fig)
 
-    fig = px.line(df, x='Time', y=["Lambda", "Mu"], color='Fonte')
+    # FIG 7 - GRAFICO 1 CALL
+    fig = px.line(df_call, x='Time', y=["E[N]",
+                                        "E[W]"], color='Fonte', title='E[N] & E[W]')
+    fig.update_layout(
+        xaxis_title='Tempo',
+        yaxis_title='E[N] & E[W]',
+        legend_title='Parâmetros'
+    )
+    figs.append(fig)
+
+    # FIG 8 - GRAFICO 2 CALL
+    fig = px.line(df_call, x='Time', y=[
+        "E[N]"], color='Fonte', title='E[N]')
+    fig.update_layout(
+        xaxis_title='Tempo',
+        yaxis_title='E[N]',
+        legend_title='Parâmetros'
+    )
+    figs.append(fig)
+
+    # FIG 9 - GRAFICO 3 CALL
+    fig = px.line(df_call, x='Time', y=["E[W]"], color='Fonte', title='E[W]')
+    fig.update_layout(
+        xaxis_title='Tempo',
+        yaxis_title='E[W]',
+        legend_title='Parâmetros'
+    )
+    figs.append(fig)
+
+    # FIG 10 - GRAFICO 5 WEB
+    fig = px.line(df_web, x='Time', y=["Lambda", "Mu"], color='Fonte')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='Taxas',
@@ -162,7 +221,18 @@ def generate_report():
     )
     figs.append(fig)
 
-    fig = px.line(df, x='Time', y="Erro de Little",
+    # FIG 11 - GRAFICO 6 WEB
+    fig = px.line(df_web, x='Time', y="Erro de Little",
+                  color='Fonte', title='Erro de Little')
+    fig.update_layout(
+        xaxis_title='Tempo',
+        yaxis_title='Erro',
+        legend_title='Parâmetros'
+    )
+    figs.append(fig)
+
+    # FIG 12 - GRAFICO 4 CALL
+    fig = px.line(df_call, x='Time', y="Erro de Little",
                   color='Fonte', title='Erro de Little')
     fig.update_layout(
         xaxis_title='Tempo',
