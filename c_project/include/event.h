@@ -9,9 +9,7 @@ typedef enum
   CHEGADA_WEB,
   SAIDA_WEB,
   CHEGADA_PACOTE_CALL,
-  SAIDA_PACOTE_CALL,
-  CHEGADA_CALL,
-  SAIDA_CALL
+  SAIDA_PACOTE_CALL
 } EventType;
 
 // Estrutura do evento

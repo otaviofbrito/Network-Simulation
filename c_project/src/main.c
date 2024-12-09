@@ -12,34 +12,30 @@
 #define INTERVALO 100.0
 #define CSV_PATH "c_project/data/output.csv"
 
-double maximo(double num1, double num2)
-{
-  if (num1 > num2)
-  {
-    return num1;
-  }
-  return num2;
-}
-
-
 int main(int argc, char *argv[])
 {
-  // Capacity of 10 elements
-  MinHeap *heap = createMinHeap(2000);
-  double tempo_simulacao = 36000;
+  // if (argc != 5)
+  // {
+  //   printf("Usage: %s seed taxa_chegada tamanho_link tempo_simulacao\n", argv[0]);
+  //   return EXIT_FAILURE;
+  // }
+
+  unsigned int seed = 100;             // atoi(argv[1]);
+  double lambda_web = 0.01;            // atof(argv[2]);
+  double lambda_call = 30;             // atoi(argv[3]);
+  double mu_call = 60;                 // atoi(argv[4]);
+  double lambda_pacote_call = 0.02;    // atoi(argv[5]);
+  double tamanho_link = 100166.666667; // atof(argv[6]);
+  double tempo_simulacao = 36000;      // atof(argv[7]);
+
+  srand(seed);
+  MinHeap *heap = createMinHeap(5000);
+
   double tempo_decorrido = 0.0;
-
-  double lambda_call = 30;
-  double mu_call = 60;
-
-  double lambda_pacote_call = 0.02;
-  double lambda_web = 0.01;
-  double tamanho_link;
-  double tempo_saida;
+  double tempo_saida = 0.0;
 
   Event saida_call;
   Event saida_web;
-  Event chamada;
 
   double soma_ocupacao = 0.0;
 
@@ -47,7 +43,6 @@ int main(int argc, char *argv[])
   unsigned long int fila_call = 0;
   unsigned long int fila_max = 0;
 
-  // iniciar variaveis de Little
   Little *en = new_little();
   Little *ew_chegadas = new_little();
   Little *ew_saidas = new_little();
@@ -55,15 +50,9 @@ int main(int argc, char *argv[])
   // metricas
   Metrics *metrics = new_metrics();
 
-  srand(100);
-  // calculando chances que cada pacote tem de ser gerado
-  tamanho_link = 100166.666667;
-
-  chamada = insertNewEvent(heap, CHEGADA_CALL, gera_tempo(lambda_call));
-  insertNewEvent(heap, SAIDA_CALL, chamada.tempo + gera_tempo(mu_call));
   insertNewEvent(heap, CHEGADA_WEB, gera_tempo(lambda_web));
-  insertNewEvent(heap, CHEGADA_PACOTE_CALL, chamada.tempo);
   insertNewEvent(heap, COLETA, 100.0);
+  insertNewEvent(heap, CHEGADA_PACOTE_CALL, gera_tempo(lambda_call));
 
   // Criar arquivo csv
   FILE *file = fopen(CSV_PATH, "a");
@@ -86,7 +75,7 @@ int main(int argc, char *argv[])
       if (!fila)
       {
         tempo_saida = gera_tempo_transmissao(0, tamanho_link);
-        saida_web = insertNewEvent(heap, SAIDA_WEB, maximo(saida_call.tempo, tempo_decorrido) + tempo_saida);
+        saida_web = insertNewEvent(heap, SAIDA_WEB, max(saida_call.tempo, tempo_decorrido) + tempo_saida);
         soma_ocupacao += tempo_saida;
       }
 
@@ -106,7 +95,7 @@ int main(int argc, char *argv[])
       if (fila)
       {
         tempo_saida = gera_tempo_transmissao(0, tamanho_link);
-        saida_web = insertNewEvent(heap, SAIDA_WEB, maximo(saida_call.tempo, tempo_decorrido) + tempo_saida);
+        saida_web = insertNewEvent(heap, SAIDA_WEB, max(saida_call.tempo, tempo_decorrido) + tempo_saida);
         soma_ocupacao += tempo_saida;
       }
 
@@ -121,7 +110,7 @@ int main(int argc, char *argv[])
       if (!fila_call)
       {
         tempo_saida = gera_tempo_transmissao(1, tamanho_link);
-        saida_call = insertNewEvent(heap, SAIDA_PACOTE_CALL, maximo(saida_web.tempo, tempo_decorrido) + tempo_saida);
+        saida_call = insertNewEvent(heap, SAIDA_PACOTE_CALL, max(saida_web.tempo, tempo_decorrido) + tempo_saida);
         soma_ocupacao += tempo_saida;
       }
 
@@ -140,7 +129,7 @@ int main(int argc, char *argv[])
       if (fila_call)
       {
         tempo_saida = gera_tempo_transmissao(1, tamanho_link);
-        saida_call = insertNewEvent(heap, SAIDA_PACOTE_CALL, maximo(saida_web.tempo, tempo_decorrido) + tempo_saida);
+        saida_call = insertNewEvent(heap, SAIDA_PACOTE_CALL, max(saida_web.tempo, tempo_decorrido) + tempo_saida);
         soma_ocupacao += tempo_saida;
       }
 
@@ -149,14 +138,6 @@ int main(int argc, char *argv[])
       littles_calc(ew_saidas, tempo_decorrido);
       en->num_eventos--;
       ew_saidas->num_eventos++;
-      break;
-
-    case CHEGADA_CALL:
-      chamada = insertNewEvent(heap, CHEGADA_CALL, tempo_decorrido + gera_tempo(lambda_call));
-      insertNewEvent(heap, SAIDA_CALL, chamada.tempo + gera_tempo(mu_call));
-      break;
-
-    case SAIDA_CALL:
       break;
 
     case COLETA:
