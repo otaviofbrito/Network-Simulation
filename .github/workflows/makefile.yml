@@ -1,4 +1,4 @@
-name: Generate Web page and Deploy - 2
+name: Generate Web page and Deploy Real Time
 
 on:
   push:
@@ -16,15 +16,16 @@ jobs:
     - name: Set up Environment
       run: sudo apt-get update && sudo apt-get install -y make python3 pip gcc
 
-    - name: Build project
+    - name: Build project for Report 2
       run: make build
 
-    - name: Generate Report
+    - name: Generate Report 2
       run: make auto
 
-    - name: Deploy to GitHub Pages
+    - name: Deploy Report 2 to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./report
         publish_branch: gh-pages  
+        destination_dir: report_real_time
