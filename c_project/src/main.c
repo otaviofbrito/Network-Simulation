@@ -14,19 +14,20 @@
 
 int main(int argc, char *argv[])
 {
-  // if (argc != 5)
-  // {
-  //   printf("Usage: %s seed taxa_chegada_web intervalo_entre_chamadas duracao_chamada intervalo_pacotes tempo_simulacao\n", argv[0]);
-  //   return EXIT_FAILURE;
-  // }
+  if (argc != 8)
+  {
+    printf("Usage: %s seed taxa_chegada_web intervalo_entre_chamadas duracao_chamada intervalo_pacotes tamanho_link tempo_simulacao\n", argv[0]);
+    return EXIT_FAILURE;
+  }
 
-  unsigned int seed = 100;                                            // atoi(argv[1]);
-  double lambda_web = 100;                                            // atof(argv[2]);
-  double lambda_call = 1.0 / 30;                                      // atoi(argv[3]);
-  double mu_call = 1.0 / 60;                                          // atoi(argv[4]);
-  double lambda_pacote_call = (1.0 / 0.02) * (lambda_call / mu_call); // 1.0/(0.02 / (mu_call / lambda_call)); // atoi(argv[5]);
-  double tamanho_link = 100166.666667;                                // atof(argv[6]);
-  double tempo_simulacao = 36000;                                     // atof(argv[7]);
+  unsigned int seed = atoi(argv[1]);
+  double lambda_web = atof(argv[2]);
+  double lambda_call = 1.0 / atof(argv[3]);
+  double mu_call = 1.0 / atof(argv[4]);
+  double lambda_pacote_call = (1.0 / atof(argv[5])) * (lambda_call / mu_call);
+  double tamanho_link = atof(argv[6]);
+
+  double tempo_simulacao = atof(argv[7]);
 
   srand(seed);
   MinHeap *heap = createMinHeap(5000);
@@ -69,11 +70,11 @@ int main(int argc, char *argv[])
     printf("Error opening file!\n");
     return EXIT_FAILURE;
   }
-  fprintf(file, "Time,Fila Max,Ocupacao,E[N],E[W],Lambda,Mu,Erro de Little,Lambda_Web, Lambda_Call, Mu_Call, Lambda_Pacote_Call, Link, Tipo\n");
+  fprintf(file, "Time,Fila Max,Ocupacao,E[N],E[W],Lambda,Mu,Erro de Little,Lambda_Web,Lambda_Call,Mu_Call,Lambda_Pacote_Call,Link,Tipo\n");
 
   while (tempo_decorrido <= tempo_simulacao)
   {
-    //Retira o proximo evento da heap
+    // Retira o proximo evento da heap
     evento = extractMin(heap);
     tempo_decorrido = evento.tempo;
     switch (evento.tipo)

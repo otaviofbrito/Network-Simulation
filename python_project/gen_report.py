@@ -20,8 +20,8 @@ def load_csv():
         df = pd.read_csv(caminho_arquivo)
         if not df.empty:
             number = arquivo.split('output')[-1].split('.')[0][-2:]
-            params = f"(P1:{df.iloc[0]['Chegada']}, P2:{df.iloc[0]['Saida']})"
-            df['Fonte'] = f'{i}: {params} = {number}%'
+            params = f"(R:{df.iloc[0]['Link']}Kb/s)"
+            df['Fonte'] = f'{i}: {params} - {number}%'
             i += 1
         dataframes.append(df)
 
@@ -47,25 +47,25 @@ def render_to_html(figs):
             j2_template = Template(template_file.read())
             output_file.write(j2_template.render(plotly_jinja_data))
 
-# "Time,Fila Max,Ocupacao,E[N],E[W],Lambda,Mu,Erro de Little,Chegada,Saida\n"
+# "Time,Fila Max,Ocupacao,E[N],E[W],Lambda,Mu,Erro de Little,Lambda_Web, Lambda_Call, Mu_Call, Lambda_Pacote_Call, Link, Tipo"
 
 
-def create_table(dfs):
+def create_table(dfs, columns, _values):
     fig = go.Figure()
 
     # Adiciona uma tabela para cada dataframe
     for i, df in enumerate(dfs):
+        df = df.loc[df["Tipo"] == "WEB"]
+        df = df[columns]
         fig.add_trace(
             go.Table(
                 header=dict(
-                    values=["Tempo", "Máximo de<br>Fila", "Ocupação",
-                            "E[N]", "E[W]", "Lambda",
-                            "Mu", "Erro de<br>Little", "Taxa de<br>Chegada<br>(pcts/s)", "Tamanho do<br>Link<br>(bytes/s)"],
+                    values=_values,
                     font=dict(size=10),
                     align="left"
                 ),
                 cells=dict(
-                    values=[df[k].tolist() for k in df.columns[:-1]],
+                    values=[df[k].tolist() for k in df.columns[:]],
                     align="left"
                 )
             )
@@ -105,7 +105,19 @@ def generate_report():
     df = pd.concat(dfs, ignore_index=True)
     figs = []
 
-    figs.append(create_table(dfs))
+    dict_web = {
+        'Time': 'Tempo',
+        'Fila Max': 'Máximo de<br>Fila',
+        'Ocupacao': 'Ocupação',
+        'E[N]': 'E[N]',
+        'E[W]': 'E[W]',
+        'Lambda': 'Lambda',
+        'Mu': 'Mu',
+        'Erro de Little': 'Erro de<br>Little',
+        'Link': 'Tamanho do<br>Link<br>(bytes/s)',
+        'Tipo': 'Tipo<br>Do<br>Pacote'
+    }
+    figs.append(create_table(dfs, list(dict_web.keys()), list(dict_web.values())))
 
     fig = px.line(df, x='Time', y="Ocupacao",
                   color='Fonte', title='Utilização (Ocupação)')
@@ -116,15 +128,14 @@ def generate_report():
     )
     figs.append(fig)
 
-    fig = px.line(df, x='Time', y=[ "E[N]",
-                        "E[W]"], color='Fonte', title='E[N] & E[W]')
+    fig = px.line(df, x='Time', y=["E[N]",
+                                   "E[W]"], color='Fonte', title='E[N] & E[W]')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='E[N] & E[W]',
         legend_title='Parâmetros'
     )
     figs.append(fig)
-
 
     fig = px.line(df, x='Time', y=[
                         "E[N]"], color='Fonte', title='E[N]')
