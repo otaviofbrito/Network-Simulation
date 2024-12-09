@@ -1,10 +1,8 @@
-
-
 #include "event.h"
 #include "heap.h"
 #include "little.h"
 
-Event newEvent(EventType tipo, double tempo)
+Event newEvent(EnumEvent tipo, double tempo)
 {
     Event evento;
     evento.tipo = tipo;
@@ -12,7 +10,7 @@ Event newEvent(EventType tipo, double tempo)
     return evento;
 }
 
-Event insertNewEvent(MinHeap *heap, EventType tipo, double tempo)
+Event insertNewEvent(MinHeap *heap, EnumEvent tipo, double tempo)
 {
     Event new_event = newEvent(tipo, tempo);
     insertMinHeap(heap, new_event);

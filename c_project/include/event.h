@@ -5,19 +5,19 @@
 // Definição do tipo de evento
 typedef enum
 {
-  COLETA,
-  CHEGADA_WEB,
-  SAIDA_WEB,
+  CHEGADA_PACOTE_WEB,
+  SAIDA_PACOTE_WEB,
   CHEGADA_PACOTE_CALL,
-  SAIDA_PACOTE_CALL
-} EventType;
+  SAIDA_PACOTE_CALL,
+  COLETA
+} EnumEvent;
 
 // Estrutura do evento
 typedef struct Event
 {
-  EventType tipo; // Tipo do evento
+  EnumEvent tipo; // Tipo do evento
   double tempo;   // Tempo associado ao evento
 } Event;
 
-Event newEvent(EventType tipo, double tempo);
-Event insertNewEvent(MinHeap *heap, EventType tipo, double tempo);
+Event newEvent(EnumEvent tipo, double tempo);
+Event insertNewEvent(MinHeap *heap, EnumEvent tipo, double tempo);

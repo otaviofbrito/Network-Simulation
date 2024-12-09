@@ -20,13 +20,13 @@ int main(int argc, char *argv[])
   //   return EXIT_FAILURE;
   // }
 
-  unsigned int seed = 100;                                    // atoi(argv[1]);
-  double lambda_web = 100;                                   // atof(argv[2]);
-  double lambda_call = 1.0/30;                                    // atoi(argv[3]);
-  double mu_call = 1.0/60;                                        // atoi(argv[4]);
-  double lambda_pacote_call = (1.0/0.02) * (lambda_call/mu_call);//1.0/(0.02 / (mu_call / lambda_call)); // atoi(argv[5]);
-  double tamanho_link = 100166.666667;                        // atof(argv[6]);
-  double tempo_simulacao = 36000;                             // atof(argv[7]);
+  unsigned int seed = 100;                                            // atoi(argv[1]);
+  double lambda_web = 100;                                            // atof(argv[2]);
+  double lambda_call = 1.0 / 30;                                      // atoi(argv[3]);
+  double mu_call = 1.0 / 60;                                          // atoi(argv[4]);
+  double lambda_pacote_call = (1.0 / 0.02) * (lambda_call / mu_call); // 1.0/(0.02 / (mu_call / lambda_call)); // atoi(argv[5]);
+  double tamanho_link = 100166.666667;                                // atof(argv[6]);
+  double tempo_simulacao = 36000;                                     // atof(argv[7]);
 
   srand(seed);
   MinHeap *heap = createMinHeap(5000);
@@ -48,10 +48,15 @@ int main(int argc, char *argv[])
   Little *ew_chegadas = new_little();
   Little *ew_saidas = new_little();
 
+  Little *en_call = new_little();
+  Little *ew_chegadas_call = new_little();
+  Little *ew_saidas_call = new_little();
+
   // metricas
   Metrics *metrics = new_metrics();
+  Metrics *metrics_call = new_metrics();
 
-  insertNewEvent(heap, CHEGADA_WEB, gera_tempo(lambda_web));
+  insertNewEvent(heap, CHEGADA_PACOTE_WEB, gera_tempo(lambda_web));
   insertNewEvent(heap, COLETA, 100.0);
   insertNewEvent(heap, CHEGADA_PACOTE_CALL, gera_tempo(lambda_call));
 
@@ -62,7 +67,7 @@ int main(int argc, char *argv[])
     printf("Error opening file!\n");
     return EXIT_FAILURE;
   }
-  fprintf(file, "Time,Fila Max,Ocupacao,E[N],E[W],Lambda,Mu,Erro de Little,Chegada,Saida\n");
+  fprintf(file, "Time,Fila Max,Ocupacao,E[N],E[W],Lambda,Mu,Erro de Little,Lambda_Web, Lambda_Call, Mu_Call, Lambda_Pacote_Call, Link, Tipo\n");
 
   while (tempo_decorrido <= tempo_simulacao)
   {
@@ -71,19 +76,19 @@ int main(int argc, char *argv[])
 
     switch (current_event.tipo)
     {
-    case CHEGADA_WEB:
+    case CHEGADA_PACOTE_WEB:
 
       if (!fila)
       {
         tempo_saida = gera_tempo_transmissao(0, tamanho_link);
         last_time = max(saida_call.tempo, tempo_decorrido);
-        saida_web = insertNewEvent(heap, SAIDA_WEB, last_time + tempo_saida);
+        saida_web = insertNewEvent(heap, SAIDA_PACOTE_WEB, last_time + tempo_saida);
         soma_ocupacao += tempo_saida;
       }
 
       fila++;
       fila_max = fila > fila_max ? fila : fila_max;
-      insertNewEvent(heap, CHEGADA_WEB, tempo_decorrido + gera_tempo(lambda_web));
+      insertNewEvent(heap, CHEGADA_PACOTE_WEB, tempo_decorrido + gera_tempo(lambda_web));
 
       // Little
       littles_calc(en, tempo_decorrido);
@@ -92,13 +97,13 @@ int main(int argc, char *argv[])
       ew_chegadas->num_eventos++;
       break;
 
-    case SAIDA_WEB:
+    case SAIDA_PACOTE_WEB:
       fila--;
       if (fila)
       {
         tempo_saida = gera_tempo_transmissao(0, tamanho_link);
         last_time = max(saida_call.tempo, tempo_decorrido);
-        saida_web = insertNewEvent(heap, SAIDA_WEB, last_time + tempo_saida);
+        saida_web = insertNewEvent(heap, SAIDA_PACOTE_WEB, last_time + tempo_saida);
         soma_ocupacao += tempo_saida;
       }
 
@@ -126,6 +131,11 @@ int main(int argc, char *argv[])
       littles_calc(ew_chegadas, tempo_decorrido);
       en->num_eventos++;
       ew_chegadas->num_eventos++;
+
+      littles_calc(en_call, tempo_decorrido);
+      littles_calc(ew_chegadas_call, tempo_decorrido);
+      en_call->num_eventos++;
+      ew_chegadas_call->num_eventos++;
       break;
 
     case SAIDA_PACOTE_CALL:
@@ -143,6 +153,11 @@ int main(int argc, char *argv[])
       littles_calc(ew_saidas, tempo_decorrido);
       en->num_eventos--;
       ew_saidas->num_eventos++;
+
+      littles_calc(en_call, tempo_decorrido);
+      littles_calc(ew_saidas_call, tempo_decorrido);
+      en_call->num_eventos--;
+      ew_saidas_call->num_eventos++;
       break;
 
     case COLETA:
@@ -152,14 +167,27 @@ int main(int argc, char *argv[])
       littles_calc(ew_chegadas, tempo_decorrido);
       littles_calc(ew_saidas, tempo_decorrido);
 
+      littles_calc(en_call, tempo_decorrido);
+      littles_calc(ew_chegadas_call, tempo_decorrido);
+      littles_calc(ew_saidas_call, tempo_decorrido);
+
       update_metrics(metrics, en, ew_chegadas, ew_saidas, soma_ocupacao, tempo_decorrido);
+      update_metrics(metrics_call, en_call, ew_chegadas_call, ew_saidas_call, soma_ocupacao, tempo_decorrido);
 
       // Escrever no arquivo CSV
-      fprintf(file, "%f,%lu,%f,%f,%f,%f,%f,%f,%f,%f\n",
+      fprintf(file, "%f,%lu,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s\n",
               tempo_decorrido, fila_max, metrics->ocupacao,
               metrics->en_final, metrics->ew_final,
               metrics->lambda, metrics->mu,
-              metrics->little_error, 0.0, 0.0);
+              metrics->little_error, lambda_web, lambda_call,
+              mu_call, lambda_pacote_call, tamanho_link, "WEB");
+
+      fprintf(file, "%f,%lu,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%s\n",
+              tempo_decorrido, fila_max, metrics_call->ocupacao,
+              metrics_call->en_final, metrics_call->ew_final,
+              metrics_call->lambda, metrics_call->mu,
+              metrics_call->little_error, lambda_web, lambda_call,
+              mu_call, lambda_pacote_call, tamanho_link, "CALL");
 
       // Atualizar o próximo tempo para calcular métricas
       insertNewEvent(heap, COLETA, tempo_decorrido + 100.00);
@@ -171,15 +199,29 @@ int main(int argc, char *argv[])
   littles_calc(ew_chegadas, tempo_decorrido);
   littles_calc(ew_saidas, tempo_decorrido);
 
-  update_metrics(metrics, en, ew_chegadas, ew_saidas, soma_ocupacao, tempo_decorrido);
+  littles_calc(ew_chegadas_call, tempo_decorrido);
+  littles_calc(ew_saidas_call, tempo_decorrido);
 
-  printf("\nMaior tamanho de fila alcancado: %ld\n", fila_max);
+  update_metrics(metrics, en, ew_chegadas, ew_saidas, soma_ocupacao, tempo_decorrido);
+  update_metrics(metrics_call, en_call, ew_chegadas_call, ew_saidas_call, soma_ocupacao, tempo_decorrido);
+
+  printf("\nPACOTES WEB+CALL:\n");
+  printf("Maior tamanho de fila alcancado: %ld\n", fila_max);
   printf("Ocupacao: %lf\n", metrics->ocupacao);
   printf("E[N]: %lf\n", metrics->en_final);
   printf("E[W]: %lf\n", metrics->ew_final);
   printf("Erro de Little: %lf\n", metrics->little_error);
   printf("Lambda: %lf\n", metrics->lambda);
   printf("Mu: %lf\n", metrics->mu);
+
+  printf("\n-------------------------------\n");
+
+  printf("\nPACOTES CALL:\n");
+  printf("E[N]: %lf\n", metrics_call->en_final);
+  printf("E[W]: %lf\n", metrics_call->ew_final);
+  printf("Erro de Little: %lf\n", metrics_call->little_error);
+  printf("Lambda: %lf\n", metrics_call->lambda);
+  printf("Mu: %lf\n", metrics_call->mu);
 
   // Adicionar ocupacao e data ao nome do arquivo csv para identificação
   int file_ocup = (int)(round(metrics->ocupacao * 100));
