@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
               metrics->en_final, metrics->ew_final,
               metrics->lambda, metrics->mu,
               metrics->little_error, lambda_web, lambda_call,
-              mu_call, lambda_pacote_call, tamanho_link, "WEB");
+              mu_call, lambda_pacote_call, tamanho_link, "WEB+CALL");
 
       fprintf(file, "%f,%lu,%f,%f,%f,%f,%f,%.15f,%f,%f,%f,%f,%f,%s\n",
               tempo_decorrido, fila_max, metrics_call->ocupacao,

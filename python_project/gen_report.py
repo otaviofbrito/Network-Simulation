@@ -20,7 +20,7 @@ def load_csv():
         df = pd.read_csv(caminho_arquivo)
         if not df.empty:
             number = arquivo.split('output')[-1].split('.')[0][-2:]
-            params = f"(R:{df.iloc[0]['Link']}Kb/s)"
+            params = f"(R:{df.iloc[0]['Link']}Bytes/s)"
             df['Fonte'] = f'{i}: {params} - {number}%'
             i += 1
         dataframes.append(df)
@@ -124,7 +124,7 @@ def generate_report():
     }
     # FIG 1 - Tabela 1 CALL+WEB
     figs.append(create_table(dfs, list(dict_web.keys()),
-                list(dict_web.values()), "WEB"))
+                list(dict_web.values()), "WEB+CALL"))
 
     dict_call = {
         'Time': 'Tempo',
@@ -140,8 +140,8 @@ def generate_report():
     figs.append(create_table(dfs, list(dict_call.keys()),
                 list(dict_call.values()), "CALL"))
 
-    df_web = df.loc[df["Tipo"] == "WEB"]
-    df_call = df.loc[df["Tipo"] == "WEB"]
+    df_web = df.loc[df["Tipo"] == "WEB+CALL"]
+    df_call = df.loc[df["Tipo"] == "CALL"]
 
     # FIG 3 - GRAFICO 1 WEB
     fig = px.line(df_web, x='Time', y="Ocupacao",
@@ -156,7 +156,7 @@ def generate_report():
 
     # FIG 4 - GRAFICO 2 WEB
     fig = px.line(df_web, x='Time', y=["E[N]",
-                                       "E[W]"], color='Fonte', title='E[N] & E[W]')
+                                       "E[W]"], color='Fonte', title='E[N] & E[W] - Total')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='E[N] & E[W]',
@@ -166,7 +166,7 @@ def generate_report():
 
     # FIG 5 - GRAFICO 3 WEB
     fig = px.line(df_web, x='Time', y=[
-        "E[N]"], color='Fonte', title='E[N]')
+        "E[N]"], color='Fonte', title='E[N] - Total')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='E[N]',
@@ -175,7 +175,7 @@ def generate_report():
     figs.append(fig)
 
     # FIG 6 - GRAFICO 4 WEB
-    fig = px.line(df_web, x='Time', y=["E[W]"], color='Fonte', title='E[W]')
+    fig = px.line(df_web, x='Time', y=["E[W]"], color='Fonte', title='E[W] - Total')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='E[W]',
@@ -185,7 +185,7 @@ def generate_report():
 
     # FIG 7 - GRAFICO 1 CALL
     fig = px.line(df_call, x='Time', y=["E[N]",
-                                        "E[W]"], color='Fonte', title='E[N] & E[W]')
+                                        "E[W]"], color='Fonte', title='E[N] & E[W] - Chamada em Tempo Real')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='E[N] & E[W]',
@@ -195,7 +195,7 @@ def generate_report():
 
     # FIG 8 - GRAFICO 2 CALL
     fig = px.line(df_call, x='Time', y=[
-        "E[N]"], color='Fonte', title='E[N]')
+        "E[N]"], color='Fonte', title='E[N] - Chamada em Tempo Real')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='E[N]',
@@ -204,7 +204,7 @@ def generate_report():
     figs.append(fig)
 
     # FIG 9 - GRAFICO 3 CALL
-    fig = px.line(df_call, x='Time', y=["E[W]"], color='Fonte', title='E[W]')
+    fig = px.line(df_call, x='Time', y=["E[W]"], color='Fonte', title='E[W] - Chamada em Tempo Real')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='E[W]',
@@ -223,17 +223,17 @@ def generate_report():
 
     # FIG 11 - GRAFICO 6 WEB
     fig = px.line(df_web, x='Time', y="Erro de Little",
-                  color='Fonte', title='Erro de Little')
+                  color='Fonte', title='Erro de Little - Total')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='Erro',
         legend_title='Parâmetros'
-    )
+    ) 
     figs.append(fig)
 
     # FIG 12 - GRAFICO 4 CALL
     fig = px.line(df_call, x='Time', y="Erro de Little",
-                  color='Fonte', title='Erro de Little')
+                  color='Fonte', title='Erro de Little - Chamada em Tempo Real')
     fig.update_layout(
         xaxis_title='Tempo',
         yaxis_title='Erro',

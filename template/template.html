@@ -146,7 +146,10 @@
       </div>
       <div class="section">
         <h3>Resultado das Simulações</h3>
+        <h4>Pacotes de Navegação Web + Ligação em Tempo Real:</h4>
         {{ fig1|safe }}
+        <h4>Pacotes de Ligação em Tempo Real:</h4>
+        {{ fig2|safe }}
       </div>
       <hr class="stylized-line" />
       <div class="section">
@@ -172,7 +175,7 @@
         *Clique nas legendas para ocultar os gráficos para uma melhor visualização
         <h3>1. Utilização/Ocupação (\(\rho\))</h3>
 
-        {{ fig2|safe }}
+        {{ fig3|safe }}
         <div>
           <h3>Validação da utilização</h3>
           <div>
@@ -239,9 +242,16 @@
           3. Média de elementos no sistema (\(E[N]\)) & Tempo médio de espera
           (\(E[W]\))
         </h3>
-        {{ fig3|safe }}
-        {{ figx|safe }}
-        {{ figy|safe }}
+        <h4>Pacotes de Navegação Web + Ligação em Tempo Real:</h4>
+        {{ fig4|safe }}
+        {{ fig5|safe }}
+        {{ fig6|safe }}
+        
+        <h4>Pacotes de Ligação em Tempo Real:</h4>
+
+        {{ fig7|safe }}
+        {{ fig8|safe }}
+        {{ fig9|safe }}
         <div>
           <h3>Validação \(E[N]\) e \(E[W]\)</h3>
           <div>
@@ -357,7 +367,7 @@
           <p>$$\mu = \frac{R}{L}$$</p>
         </div>
 
-        {{ fig4|safe }}
+        {{ fig10|safe }}
 
         <p>Calcule \(\mu\) através da equação obtida:</p>
         <div class="validate">
@@ -402,7 +412,12 @@
           <p>
             $$\text{Erro de Little} = \left| E[N] - \lambda \cdot E[W] \right|$$
           </p>
-          {{ fig5|safe }}
+
+          <h4>Pacotes de Navegação Web + Ligação em Tempo Real:</h4>
+          {{ fig11|safe }}
+
+          <h4>Pacotes de Ligação em Tempo Real:</h4>
+          {{ fig12|safe }}
         </div>
         <hr class="stylized-line" />
         <div class="section">
