@@ -16,23 +16,24 @@ int main(int argc, char *argv[])
 {
   // if (argc != 5)
   // {
-  //   printf("Usage: %s seed taxa_chegada tamanho_link tempo_simulacao\n", argv[0]);
+  //   printf("Usage: %s seed taxa_chegada_web intervalo_entre_chamadas duracao_chamada intervalo_pacotes tempo_simulacao\n", argv[0]);
   //   return EXIT_FAILURE;
   // }
 
-  unsigned int seed = 100;             // atoi(argv[1]);
-  double lambda_web = 0.01;            // atof(argv[2]);
-  double lambda_call = 30;             // atoi(argv[3]);
-  double mu_call = 60;                 // atoi(argv[4]);
-  double lambda_pacote_call = 0.02;    // atoi(argv[5]);
-  double tamanho_link = 100166.666667; // atof(argv[6]);
-  double tempo_simulacao = 36000;      // atof(argv[7]);
+  unsigned int seed = 100;                                    // atoi(argv[1]);
+  double lambda_web = 100;                                   // atof(argv[2]);
+  double lambda_call = 1.0/30;                                    // atoi(argv[3]);
+  double mu_call = 1.0/60;                                        // atoi(argv[4]);
+  double lambda_pacote_call = (1.0/0.02) * (lambda_call/mu_call);//1.0/(0.02 / (mu_call / lambda_call)); // atoi(argv[5]);
+  double tamanho_link = 100166.666667;                        // atof(argv[6]);
+  double tempo_simulacao = 36000;                             // atof(argv[7]);
 
   srand(seed);
   MinHeap *heap = createMinHeap(5000);
 
   double tempo_decorrido = 0.0;
   double tempo_saida = 0.0;
+  double last_time = 0.0;
 
   Event saida_call;
   Event saida_web;
@@ -75,14 +76,15 @@ int main(int argc, char *argv[])
       if (!fila)
       {
         tempo_saida = gera_tempo_transmissao(0, tamanho_link);
-        saida_web = insertNewEvent(heap, SAIDA_WEB, max(saida_call.tempo, tempo_decorrido) + tempo_saida);
+        last_time = max(saida_call.tempo, tempo_decorrido);
+        saida_web = insertNewEvent(heap, SAIDA_WEB, last_time + tempo_saida);
         soma_ocupacao += tempo_saida;
       }
 
       fila++;
       fila_max = fila > fila_max ? fila : fila_max;
-
       insertNewEvent(heap, CHEGADA_WEB, tempo_decorrido + gera_tempo(lambda_web));
+
       // Little
       littles_calc(en, tempo_decorrido);
       littles_calc(ew_chegadas, tempo_decorrido);
@@ -95,7 +97,8 @@ int main(int argc, char *argv[])
       if (fila)
       {
         tempo_saida = gera_tempo_transmissao(0, tamanho_link);
-        saida_web = insertNewEvent(heap, SAIDA_WEB, max(saida_call.tempo, tempo_decorrido) + tempo_saida);
+        last_time = max(saida_call.tempo, tempo_decorrido);
+        saida_web = insertNewEvent(heap, SAIDA_WEB, last_time + tempo_saida);
         soma_ocupacao += tempo_saida;
       }
 
@@ -110,13 +113,14 @@ int main(int argc, char *argv[])
       if (!fila_call)
       {
         tempo_saida = gera_tempo_transmissao(1, tamanho_link);
-        saida_call = insertNewEvent(heap, SAIDA_PACOTE_CALL, max(saida_web.tempo, tempo_decorrido) + tempo_saida);
+        last_time = max(saida_web.tempo, tempo_decorrido);
+        saida_call = insertNewEvent(heap, SAIDA_PACOTE_CALL, last_time + tempo_saida);
         soma_ocupacao += tempo_saida;
       }
 
       fila_call++;
+      insertNewEvent(heap, CHEGADA_PACOTE_CALL, tempo_decorrido + gera_tempo(lambda_pacote_call));
 
-      insertNewEvent(heap, CHEGADA_PACOTE_CALL, tempo_decorrido + gera_tempo(lambda_pacote_call / (mu_call / lambda_call)));
       // Little
       littles_calc(en, tempo_decorrido);
       littles_calc(ew_chegadas, tempo_decorrido);
@@ -129,7 +133,8 @@ int main(int argc, char *argv[])
       if (fila_call)
       {
         tempo_saida = gera_tempo_transmissao(1, tamanho_link);
-        saida_call = insertNewEvent(heap, SAIDA_PACOTE_CALL, max(saida_web.tempo, tempo_decorrido) + tempo_saida);
+        last_time = max(saida_web.tempo, tempo_decorrido);
+        saida_call = insertNewEvent(heap, SAIDA_PACOTE_CALL, last_time + tempo_saida);
         soma_ocupacao += tempo_saida;
       }
 

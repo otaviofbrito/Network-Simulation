@@ -21,7 +21,7 @@ double uniforme()
 // gera o tempo por meio de uma distribuicao exponencial
 double gera_tempo(double l)
 {
-  return -1.0 / (1.0 / l) * log(uniforme());
+  return (-1.0 / l) * log(uniforme());
 }
 
 Metrics *new_metrics()
