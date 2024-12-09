@@ -10,7 +10,7 @@ Event newEvent(EnumEvent tipo, double tempo)
     return evento;
 }
 
-Event insertNewEvent(MinHeap *heap, EnumEvent tipo, double tempo)
+Event insertNewEvent(EnumEvent tipo, double tempo, MinHeap *heap)
 {
     Event new_event = newEvent(tipo, tempo);
     insertMinHeap(heap, new_event);

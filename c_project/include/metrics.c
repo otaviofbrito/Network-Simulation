@@ -49,7 +49,7 @@ void update_metrics(Metrics *m, Little *en, Little *ew_chegadas, Little *ew_said
   m->lambda = ew_chegadas->num_eventos / tempo_decorrido;
   m->mu = (1 / m->ew_final) + m->lambda;
   m->ocupacao = soma_ocupacao / tempo_decorrido;
-  m->little_error = abs(m->en_final - (m->lambda * m->ew_final));
+  m->little_error = fabs(m->en_final - (m->lambda * m->ew_final));
 }
 
 // Simula navegação na web

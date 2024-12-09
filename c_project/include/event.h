@@ -20,4 +20,4 @@ typedef struct Event
 } Event;
 
 Event newEvent(EnumEvent tipo, double tempo);
-Event insertNewEvent(MinHeap *heap, EnumEvent tipo, double tempo);
+Event insertNewEvent(EnumEvent tipo, double tempo, MinHeap *heap);
