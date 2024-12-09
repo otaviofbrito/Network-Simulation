@@ -2,6 +2,8 @@
 #include "little.h"
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
+
 
 typedef struct Metrics
 {
@@ -17,9 +19,11 @@ double uniforme();
 
 double gera_tempo(double l);
 
-int gerar_pacote();
+int gerar_pacote_web();
 
-double gera_tempo_transmissao(double link);
+int gerar_pacote_call();
+
+double gera_tempo_transmissao(int type, double link);
 
 Metrics *new_metrics();
 

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+
 #include <float.h>
 
 #include "metrics.h"
@@ -20,7 +21,7 @@ double uniforme()
 // gera o tempo por meio de uma distribuicao exponencial
 double gera_tempo(double l)
 {
-  return (-1.0 / l) * log(uniforme());
+  return -1.0 / (1.0 / l) * log(uniforme());
 }
 
 Metrics *new_metrics()
@@ -52,7 +53,7 @@ void update_metrics(Metrics *m, Little *en, Little *ew_chegadas, Little *ew_said
 }
 
 // Simula navegação na web
-int gerar_pacote()
+int gerar_pacote_web()
 {
   int random_value = rand() % 100; // Gera um número aleatório entre 0 e 99
 
@@ -73,8 +74,15 @@ int gerar_pacote()
   }
 }
 
-double gera_tempo_transmissao(double link)
+// Simula navegação na web
+int gerar_pacote_call()
 {
-  // Tempo de transmissao = L/R
-  return gerar_pacote() / link;
+  return 160;
+}
+
+double gera_tempo_transmissao(int type, double link)
+{
+  // Tempo de transmissão = L / R
+  // 1 pacote call, 0 pacote web
+  return type ? gerar_pacote_call() / link : gerar_pacote_web() / link;
 }

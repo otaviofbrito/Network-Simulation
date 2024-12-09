@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Iinclude
 LDFLAGS = -lm
-SRC = src/main.c include/metrics.c include/little.c
+SRC = src/main.c include/metrics.c include/little.c include/heap.c  include/event.c 
 OBJ_DIR = object
 OBJ = $(SRC:src/%.c=$(OBJ_DIR)/%.o)
 
