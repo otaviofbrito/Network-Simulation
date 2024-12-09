@@ -4,15 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//foward declaration
 typedef struct Event Event;
 
 // Estrutura da Min Heap
 typedef struct MinHeap
 {
-  Event *events; // Array de eventos
-  int max_capacity;  // Capacidade máxima do heap
+  Event *arr; // Array de eventos
   int size;      // Tamanho atual do heap
+  int capacity;  // Capacidade máxima do heap
 } MinHeap;
 
 /**
