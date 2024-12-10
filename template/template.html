@@ -29,18 +29,15 @@
       </header>
       <div class="section">
         <h2>
-          Simulação de Rede Pt. 2 (Navegação na Web + Chamada em Tempo Real)
+          Simulação de Rede Segunda Parte (Navegação na Web e Chamadas em Tempo Real)
         </h2>
         <p>
-          Nesta etapa, o simulador atenderá a dois tipos de requisição: pacotes
-          de
-          <strong>navegação web</strong>, como anteriormente, e também pacotes
-          de <strong>chamada em tempo real</strong>, que possuem um
-          comportamento diferente. Essa nova funcionalidade permite a realização
-          de chamadas em tempo real pelos usuários. A simulação de chamadas
-          envolve a chegada de pacotes que seguem uma
-          <strong>distribuição exponencial</strong>, tanto para navegação web
-          quanto para chamadas em tempo real.
+          Nesta etapa, acrescentaremos ao simulador do roteador, a possibilidade de que os usuários realizem chamadas em tempo real.
+          Além da simulação da <strong>navegação web</strong> realizada anteriormente, uniremos a simulação das chamadas web, 
+          o que implica que o roteador atenderá a dois tipos de requisição: pacotes web e pacotes de chamadas.
+           A simulação de chamadas ocorre de maneira similar com a simulação anterior, pois envolve a chegada de pacotes que seguem uma
+          <strong>distribuição exponencial</strong>. Entretanto, para esse caso, as chamadas em tempo possuem um comportamento distinto, uma vez que
+          podem ocorrer de forma simultânea.
         </p>
       </div>
       <hr class="stylized-line" />
@@ -48,10 +45,10 @@
         <h2>Cenário</h2>
         <p>
           Neste novo cenário, os pacotes de
-          <strong>navegação web</strong> seguem o mesmo comportamento de antes.
-          No entanto, agora também precisamos lidar com pacotes de
+          <strong>navegação web</strong> seguem o mesmo comportamento anterior.
+          No entanto, com a adição deste novo evento, é necessário lidar com pacotes de
           <strong>chamadas em tempo real</strong>, que possuem características
-          diferentes e podem ocorrer de forma simultânea. Para realizarmos as
+          diferentes e principalmente, podem ocorrer de forma simultânea. Para realizarmos as
           simulações, é necessário controlar algumas variáveis. Com a adição
           deste evento, temos
           <strong>três variáveis aleatórias adicionais</strong>:
@@ -82,7 +79,7 @@
             <strong>64 Kbps</strong>
           </li>
           <li>
-            Intervalo entre pacotes de uma chamada: <b>20 ms</b> , seguindo o
+            Intervalo entre pacotes de uma chamada: <b>20 ms</b>, seguindo o
             padrão <strong>CBR (Constant Bit Rate)</strong>. Isso significa que
             a transmissão de bits será constante e, consequentemente, o tamanho
             dos pacotes também.
@@ -115,14 +112,14 @@
           <p class="tex_result">$$R = \frac{L \cdot \lambda}{\rho}$$</p>
         </div>
         <div>
-          <h3>Taxa de chegada de pacotes no Sistema(\(\lambda\))</h3>
+          <h3>Taxa de chegada de pacotes no sistema (\(\lambda\))</h3>
           <p>
             A taxa de chegada de pacotes no sistema será a soma da taxa de
             chegada de pacotes de navegação web e da taxa de chegada de pacotes
-            de chamadas em tempo real. No entanto, é importante observar que
+            de chamadas em tempo real. Porém, conforme apontado anteriormente, 
             múltiplas chamadas podem ocorrer simultaneamente. Assim, a taxa de
             chegada de pacotes de chamadas em tempo real deve ser multiplicada
-            pelo número de chamadas simultâneas \((N)\).
+            pelo número de chamadas simultâneas no sistema \((N)\).
           </p>
           <p class="tex_result">
             $$\lambda = \lambda_{web} + (\lambda_{call} * N)$$
@@ -140,9 +137,7 @@
           </div>
 
           <div>
-            A taxa de chegada de pacotes de navegação web contínua a mesma. No
-            entando, a taxa de chegada de pacotes de chamada em tempo real deve
-            ser calculado.
+            A taxa de chegada de pacotes de navegação web se mantêm o mesmo. Com a inclusão da possibilidade de realização de chamadas, também devemos encontrar a taxa de chegada de pacotes para esse cenário.
             <ul>
               <li>\(\lambda_{web} = 100 \, \text{pacotes/s}\)</li>
               <li>
@@ -159,8 +154,8 @@
           <h3>Tamanho Médio dos Pacotes do Sistema (\(L\))</h3>
           <div>
             <p>
-              Como temos dois tipos de pacotes sendo atendidos, o tamanho médio
-              do pacote do sistema deve ser calculado com base na probabilidade
+              Como possuímos dois tipos de pacotes sendo atendidos neste sistema, o tamanho médio
+              do pacote, do sistema como todo, deve ser calculado com base na probabilidade
               de chegada de cada um dos dois tipos:
             </p>
 
@@ -199,7 +194,7 @@
 
             <p>
               Já o tamanho médio dos pacotes de chamada em tempo real pode ser
-              calculado com base em suas características : Temos que a taxa de
+              calculado com base em suas particularidades:  Temos que a taxa de
               geração é de 64 Kbps: $$ 64 \, \text{Kbps} = \frac{64 \times 1000
               }{8} = 8000 \, \text{bytes/s} $$ Como cada pacote é gerado a uma
               taxa de <b>20 ms</b>: $$ 8000 \times 0,02 = 160 \, \text{bytes} $$
@@ -214,7 +209,7 @@
               = \frac{\lambda_{call}}{\lambda} = \frac{100}{200} = 0.5$$
             </p>
             <p>
-              Com isso podemos finalizar o cálculo do tamanho médio do pacote no
+              Com isso. podemos finalizar o cálculo do tamanho médio do pacote no
               sistema: $$L = L_{web} * P_{web} +L_{call} * P_{call}$$
               Substituindo os valores: $$L = 441 * 0.5 + 160 * 0.5$$ $$L = 300.5
               \, \text{bytes}$$
