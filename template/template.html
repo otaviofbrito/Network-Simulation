@@ -126,9 +126,8 @@
           </p>
           <div>
             O número médio de chamadas simultâneas pode ser calculado por: $$N =
-            \frac{\text{Tempo de duração das chamadas}}{\text{Intervalo entre o
-            início de novas chamadas }}$$ Estabelecemos os seguintes valores na
-            simulação:
+            \frac{\text{Tempo de duração das chamadas}}{\text{Intervalo entre o início de novas chamadas }}$$
+            Estabelecemos os seguintes valores na simulação:
             <ul>
               <li>Tempo de duração das chamadas = \(60\)s</li>
               <li>Intervalo entre o início de novas chamadas = \(30\)s</li>
@@ -308,7 +307,7 @@
                 type="number"
                 id="ocup_lambda"
                 placeholder="pcts/s"
-                value="100"
+                value="200"
                 min="0"
                 step="0.05"
               />
@@ -320,7 +319,7 @@
                 type="number"
                 id="ocup_l"
                 placeholder="bytes"
-                value="441"
+                value="300.5"
                 min="0"
                 step="1"
               />
@@ -332,7 +331,7 @@
                 type="number"
                 id="ocup_r"
                 placeholder="(bytes/s)"
-                value="73500"
+                value="100066.6667"
                 min="0"
                 step="0.1"
               />
@@ -362,31 +361,6 @@
         {{ fig7|safe }} {{ fig8|safe }} {{ fig9|safe }}
         <div>
           <h3>Validação \(E[N]\) e \(E[W]\)</h3>
-          <div>
-            <p>
-              Como discutido no
-              <a
-                href="https://otaviofbrito.github.io/discrete-time-event-simulation/report.html#en_ew"
-                target="_blank"
-                >artigo anterior</a
-              >, sabemos que \(E[N]\) e \(E[W]\) podem ser representados por:
-              $$E[N] = \frac{\rho}{1-\rho} \ \ \ \ \ E[W] = \frac{1}{\mu -
-              \lambda}$$
-            </p>
-            <p>
-              Vamos calcular \(E[W]\) tendo como base a taxa de chegada dos
-              pacotes \((\lambda)\), o tamanho médio do pacote \((L)\) e o
-              tamanho do link\((R)\).
-            </p>
-            <p>
-              Substituindo \(\mu\) por \(R/L\) em \(E[W]\): $$E[W] =
-              \frac{1}{\frac{R}{L} - \lambda}$$ $$E[W] = \frac{1}{\frac{R - L
-              \cdot \lambda}{L}}$$ Portanto, o tempo médio de espera pode ser
-              representado por:
-            </p>
-
-            <p class="tex_result">$$E[W] = \frac{L}{R - L \cdot \lambda}$$</p>
-          </div>
         </div>
 
         <p>Calcule \(E[N]\) e \(E[W]\) através das fórmulas:</p>
@@ -410,7 +384,7 @@
                 type="number"
                 id="e_lambda"
                 placeholder="pcts/s"
-                value="100"
+                value="200"
                 min="0"
                 step="0.1"
               />
@@ -422,7 +396,7 @@
                 type="number"
                 id="e_l"
                 placeholder="bytes"
-                value="441"
+                value="300.5"
                 min="0"
                 step="1"
               />
@@ -433,7 +407,7 @@
                 type="number"
                 id="e_r"
                 placeholder="bytes/s"
-                value="73500"
+                value="100066.6667"
                 min="0"
                 step="0.1"
               />
@@ -486,7 +460,7 @@
                 type="number"
                 id="mu_l"
                 placeholder="bytes"
-                value="441"
+                value="300.5"
                 min="0"
                 step="1"
               />
@@ -498,7 +472,7 @@
                 type="number"
                 id="mu_r"
                 placeholder="(bytes/s)"
-                value="73500"
+                value="100066.6667"
                 min="0"
                 step="0.1"
               />
