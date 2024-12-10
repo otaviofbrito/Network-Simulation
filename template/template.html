@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Simulação Tempo Real</title>
-    <link rel="stylesheet" href="../report/utils/template.css" />
+    <link rel="stylesheet" href="utils/template.css" />
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script
@@ -19,68 +19,77 @@
       <header>
         <div class="nav">
           <a
-            href="https://otaviofbrito.github.io/Network-Simulation/report.html"
+            href="https://otaviofbrito.github.io/Network-Simulation/report_web/report.html"
           >
-          < Simulação Pt. 1 </a
-          >
+            < Simulação Pt. 1
+          </a>
         </div>
         <h1>Simulação via Eventos Discretos</h1>
         <p class="subtitle">Discrete Time Event Simulation</p>
       </header>
       <div class="section">
-        <h2>Simulação de Rede Pt. 2 (Navegação na Web + Chamada em Tempo Real)</h2>
+        <h2>
+          Simulação de Rede Pt. 2 (Navegação na Web + Chamada em Tempo Real)
+        </h2>
         <p>
-          Para a parte dois deste trabalho, acrescentamos no simulador desenvolvido na etapa anterior,
-          a possibilidade da realização de chamadas em tempo real pelos usuários. Da mesma forma, 
-          a simulação de chamadas, envolve a chegada de pacotes, seguindo uma <b>distribuição exponencial</b>. 
+          Nesta etapa, o simulador atenderá a dois tipos de requisição: pacotes
+          de
+          <strong>navegação web</strong>, como anteriormente, e também pacotes
+          de <strong>chamada em tempo real</strong>, que possuem um
+          comportamento diferente. Essa nova funcionalidade permite a realização
+          de chamadas em tempo real pelos usuários. A simulação de chamadas
+          envolve a chegada de pacotes que seguem uma
+          <strong>distribuição exponencial</strong>, tanto para navegação web
+          quanto para chamadas em tempo real.
         </p>
       </div>
       <hr class="stylized-line" />
       <div class="section">
         <h2>Cenário</h2>
         <p>
-          Conforme discutido no trabalho anterior, para realizarmos nossa simulações,
-           precisamos ter controle sobre algumas variáveis. Nesse caso, com adição deste evento, 
-           possuímos possuímos 2 variáveis aleatórias adicionais: o <b>intervalo entre o início de novas chamadas</b>
-           e <b>tempo de duração das chamadas</b>. Para esse cenário, assumimos que: 
+          Neste novo cenário, os pacotes de
+          <strong>navegação web</strong> seguem o mesmo comportamento de antes.
+          No entanto, agora também precisamos lidar com pacotes de
+          <strong>chamadas em tempo real</strong>, que possuem características
+          diferentes e podem ocorrer de forma simultânea. Para realizarmos as
+          simulações, é necessário controlar algumas variáveis. Com a adição
+          deste evento, temos
+          <strong>três variáveis aleatórias adicionais</strong>:
         </p>
         <ul>
-          <li>O intervalo entre o início de novas chamadas: distribuição exponencial com média de 30 segundos</li>
-          <li>Tempo de duração das chamadas: distribuição exponencial com média de 60 segundos</li>
-        </ul>  
-        
+          <li><strong>Intervalo entre o início de novas chamadas</strong></li>
+          <li><strong>Tempo de duração das chamadas</strong></li>
+          <li><strong>Intervalo entre pacotes de uma chamada</strong></li>
+        </ul>
+        <p>Para este cenário, assumimos que:</p>
+        <ul>
+          <li>
+            <strong>Intervalo entre o início de novas chamadas:</strong> segue
+            uma distribuição exponencial com média \(\leq 30 \) segundos.
+          </li>
+          <li>
+            <strong>Tempo de duração das chamadas:</strong> segue uma
+            distribuição exponencial com média de \(\geq 60 \) segundos.
+          </li>
+        </ul>
         <p>
-          Como as chamadas utilizam o CODEC G.711, temos que: 
+          Foi estabelecido que as chamadas utilizam o CODEC
+          <strong>G.711</strong>, cujas características são:
         </p>
         <ul>
-          <li>Taxa de geração dos pacotes: 64 <b>Kbps</b></li>
-          <li>Intervalo entre pacotes: 20 ms <b>CBR (Constant Bit Rate)</b>. Isto é a transmissão de bits será constante, 
-            e portanto o tamanho dos pacotes também.</li>
-        </ul>  
-        <p>
-          Com essas informações podemos obter algumas medidas para esse cenário. como a taxa de chegada dos 
-          pacotes (\(\lambda\)) e o tamanho médio dos pacotes para as chamadas (\(L\)).
-        </p>
-        <div>
-          <h3>Tamanho Médio dos Pacotes (\(L\))</h3>
-          <p>
-            Temos que a taxa de geração é de 64 Kbps, o que equivale a 8000 bytes/s: 
-             \( 64 \, \text{Kbps} = \frac{64 \times 1000}{8} \)
-             \( 64 \, \text{Kbps} = 8000 \, \text{bytes/s} \)
+          <li>
+            Taxa de geração dos pacotes:
+            <strong>64 Kbps</strong>
+          </li>
+          <li>
+            Intervalo entre pacotes de uma chamada: <b>20 ms</b> , seguindo o
+            padrão <strong>CBR (Constant Bit Rate)</strong>. Isso significa que
+            a transmissão de bits será constante e, consequentemente, o tamanho
+            dos pacotes também.
+          </li>
+        </ul>
+        <p>Com o cenário definido, podemos prosseguir com os cálculos.</p>
 
-             Como cada pacote é gerado a uma taxa de 20 ms, ou \( 0,02 \, \text{s} \), 
-             o tamanho de cada pacote será \( 8000 \times 0,02 = 160 \, \text{Bytes} \). 
-          </p>
-        </div>
-        <div>
-          <h3>Taxa de chegada de pacotes (\(\lambda\))</h3>
-          <p>
-            Para (\(\lambda\)): 
-            \( 1 \, \text{segundo} = 1000 \, \text{ms} \) <br>
-            \( \frac{1000}{20} = 50 \, \text{pacotes por segundo} \). <br>
-            De fato, pois: \( \frac{1}{\lambda} = 0,02 \) e \( \lambda = 50 \, \text{pacotes/segundo} \).
-          </p>
-        </div>
         <div>
           <h3>Ocupação</h3>
           <p>
@@ -97,21 +106,127 @@
             Assim, devemos calcular o tamanho do link (\(R\)) previamente para
             que ao final da execução esses cenários sejam satisfeitos.
           </p>
+          <p>
+            Utilizaremos a fórmula derivada no
+            <a href="#" title="Simulação Parte 1">artigo anterior</a>
+            para calcular a capacidade de atendimento do link em bytes/s,
+            garantindo que as utilizações desejadas sejam alcançadas:
+          </p>
+          <p class="tex_result">$$R = \frac{L \cdot \lambda}{\rho}$$</p>
+        </div>
+        <div>
+          <h3>Taxa de chegada de pacotes no Sistema(\(\lambda\))</h3>
+          <p>
+            A taxa de chegada de pacotes no sistema será a soma da taxa de
+            chegada de pacotes de navegação web e da taxa de chegada de pacotes
+            de chamadas em tempo real. No entanto, é importante observar que
+            múltiplas chamadas podem ocorrer simultaneamente. Assim, a taxa de
+            chegada de pacotes de chamadas em tempo real deve ser multiplicada
+            pelo número de chamadas simultâneas \((N)\).
+          </p>
+          <p class="tex_result">
+            $$\lambda = \lambda_{web} + (\lambda_{call} * N)$$
+          </p>
+          <div>
+            O número médio de chamadas simultâneas pode ser calculado por: $$N =
+            \frac{\text{Tempo de duração das chamadas}}{\text{Intervalo entre o
+            início de novas chamadas }}$$ Estabelecemos os seguintes valores na
+            simulação:
+            <ul>
+              <li>Tempo de duração das chamadas = \(60\)s</li>
+              <li>Intervalo entre o início de novas chamadas = \(30\)s</li>
+            </ul>
+            $$N = \frac{60}{30} = 2 \, \text{chamadas}$$
+          </div>
+
+          <div>
+            A taxa de chegada de pacotes de navegação web contínua a mesma. No
+            entando, a taxa de chegada de pacotes de chamada em tempo real deve
+            ser calculado.
+            <ul>
+              <li>\(\lambda_{web} = 100 \, \text{pacotes/s}\)</li>
+              <li>
+                \(\lambda_{call} = \frac{1}{0.02} * N = 50 * 2 = 100 \,
+                \text{pacotes/s}\)
+              </li>
+            </ul>
+
+            $$\lambda = \lambda_{web} + \lambda_{call} * N$$ $$\lambda = 100 +
+            100 $$ $$\lambda = 200 \, \text{pacotes/s}$$
+          </div>
+        </div>
+        <div>
+          <h3>Tamanho Médio dos Pacotes do Sistema (\(L\))</h3>
+          <div>
+            <p>
+              Como temos dois tipos de pacotes sendo atendidos, o tamanho médio
+              do pacote do sistema deve ser calculado com base na probabilidade
+              de chegada de cada um dos dois tipos:
+            </p>
+
+            <p class="tex_result">
+              $$L = L_{web} * P_{web} +L_{call} * P_{call}$$
+            </p>
+            <ul>
+              <li>
+                \(L\): Tamanho médio em <i>bytes</i> dos pacotes que chegam no
+                sistema
+              </li>
+              <li>
+                \(L_{web}\): Tamanho médio em <i>bytes</i> dos pacotes de
+                navegação web
+              </li>
+              <li>
+                \(L_{call}\): Tamanho médio em <i>bytes</i> dos pacotes de
+                chamada em tempo real
+              </li>
+              <li>
+                \(P_{web}\): Probabilidade de um pacote gerado ser de navegação
+                web
+              </li>
+              <li>
+                \(P_{call}\): Probabilidade de um pacote gerado ser de uma
+                chamada em tempo real
+              </li>
+            </ul>
+
+            <p>
+              O tamanho médio dos pacotes de navegação web pode ser calculado
+              com base nas proporções fornecidas: $$L_{web} = (0.5 \times 550) +
+              (0.4 \times 40) + (0.1 \times 1500)$$ $$L_{web} = 441 \
+              \text{bytes}$$
+            </p>
+
+            <p>
+              Já o tamanho médio dos pacotes de chamada em tempo real pode ser
+              calculado com base em suas características : Temos que a taxa de
+              geração é de 64 Kbps: $$ 64 \, \text{Kbps} = \frac{64 \times 1000
+              }{8} = 8000 \, \text{bytes/s} $$ Como cada pacote é gerado a uma
+              taxa de <b>20 ms</b>: $$ 8000 \times 0,02 = 160 \, \text{bytes} $$
+              $$L_{call} = 160 \ \text{bytes}$$
+            </p>
+
+            <p>
+              O próximo passo é calcular a probabilidade de chegada de cada
+              pacote, para isso precisamos ter conhecimento da taxa de chagada
+              de pacotes no sistema \((\lambda)\). $$P_{web} =
+              \frac{\lambda_{web}}{\lambda} = \frac{100}{200} = 0.5$$ $$P_{call}
+              = \frac{\lambda_{call}}{\lambda} = \frac{100}{200} = 0.5$$
+            </p>
+            <p>
+              Com isso podemos finalizar o cálculo do tamanho médio do pacote no
+              sistema: $$L = L_{web} * P_{web} +L_{call} * P_{call}$$
+              Substituindo os valores: $$L = 441 * 0.5 + 160 * 0.5$$ $$L = 300.5
+              \, \text{bytes}$$
+            </p>
+          </div>
         </div>
 
         <div>
           <h3>Tamanho do Link (\(R\))</h3>
-          <p>
-            A fórmula da utilização é dada por: $$\rho = \frac{\lambda}{\mu}$$
-            $$\text{Tempo médio de atendimento} = \frac{1}{\mu} = \frac{L}{R}$$
-            Manipulando a fórmula da utilização: $$\mu = \frac{\lambda}{\rho}$$
-            $$\frac{1}{\mu} = \frac{\rho}{\lambda}$$ Substituindo \(1/\mu\) por
-            \(L/R\): $$\frac{\rho}{\lambda}= \frac{L}{R}$$ Portanto, o tamanho
-            do link em <b>bytes/segundo</b> pode ser calculado como:
-          </p>
-          <p class="tex_result">$$R = \frac{L \cdot \lambda}{\rho}$$</p>
+          Agora que dispomos de todos os valores necessários, podemos calcular o
+          tamanho do link para cada ocupação desejada.
         </div>
-
         <div>
           <h3>Cálculo da Capacidade do Link para as Diversas Ocupações</h3>
           <p>
@@ -121,27 +236,27 @@
           <div>
             Temos que:
             <ul>
-              <li>\(\lambda = 100 \ \text{pcts/s}\)</li>
-              <li>\(L_{médio} = 441\ \text{bytes}\)</li>
+              <li>\(\lambda = 200 \ \text{pcts/s}\)</li>
+              <li>\(L_{médio} = 300.5\ \text{bytes}\)</li>
               <li>\(\rho = \{0.6, 0.8, 0.95, 0.99\}\)</li>
             </ul>
           </div>
           <ol>
             <li>
-              60% de ocupação: $$R_{60\%} = \frac{441 \cdot 100}{0.6} = 73500 \
-              \text{bytes/s}$$
+              60% de ocupação: $$R_{60\%} = \frac{ 300.5 \cdot 200}{0.6} \approx
+              100166,6667 \ \text{bytes/s}$$
             </li>
             <li>
-              80% de ocupação: $$R_{80\%} = \frac{441 \cdot 100}{0.8} = 55125 \
-              \text{bytes/s}$$
+              80% de ocupação: $$R_{80\%} = \frac{ 300.5 \cdot 200}{0.8} = 75125
+              \ \text{bytes/s}$$
             </li>
             <li>
-              95% de ocupação: $$R_{95\%} = \frac{441 \cdot 100}{0.95} \approx
-              46421 \ \text{bytes/s}$$
+              95% de ocupação: $$R_{95\%} = \frac{ 300.5 \cdot 200}{0.95}
+              \approx 63263,1579 \ \text{bytes/s}$$
             </li>
             <li>
-              99% de ocupação: $$R_{99\%} = \frac{441 \cdot 100}{0.99} \approx
-              44545 \ \text{bytes/s}$$
+              99% de ocupação: $$R_{99\%} = \frac{ 300.5 \cdot 200}{0.99}
+              \approx 60707,0707 \ \text{bytes/s}$$
             </li>
           </ol>
         </div>
@@ -173,8 +288,8 @@
         </ul>
 
         Em algumas medidas, existem campos que podem ser utilzados para validar
-        o desempenho do sistema.
-        *Clique nas legendas para ocultar os gráficos para uma melhor visualização
+        o desempenho do sistema. *Clique nas legendas para ocultar os gráficos
+        para uma melhor visualização
         <h3>1. Utilização/Ocupação (\(\rho\))</h3>
 
         {{ fig3|safe }}
@@ -245,15 +360,11 @@
           (\(E[W]\))
         </h3>
         <h4>Pacotes de Navegação Web + Ligação em Tempo Real:</h4>
-        {{ fig4|safe }}
-        {{ fig5|safe }}
-        {{ fig6|safe }}
-        
+        {{ fig4|safe }} {{ fig5|safe }} {{ fig6|safe }}
+
         <h4>Pacotes de Ligação em Tempo Real:</h4>
 
-        {{ fig7|safe }}
-        {{ fig8|safe }}
-        {{ fig9|safe }}
+        {{ fig7|safe }} {{ fig8|safe }} {{ fig9|safe }}
         <div>
           <h3>Validação \(E[N]\) e \(E[W]\)</h3>
           <div>
@@ -452,8 +563,7 @@
               >Alicia Garnier</a
             >.
           </p>
-          <a
-            href="https://github.com/otaviofbrito/Network-Simulation"
+          <a href="https://github.com/otaviofbrito/Network-Simulation"
             >GitHub</a
           >
         </footer>
