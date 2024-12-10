@@ -23,7 +23,7 @@ python_input:
 
 clean:
 	$(MAKE) -C c_project clean
-	@if [ -f report/report2.html ]; then rm report/report2.html; fi
+	@if [ -f report/report.html ]; then rm report/report.html; fi
 	@echo "[OK]: Ambiente limpo!"
 
 build:

@@ -3,7 +3,7 @@ import webbrowser
 import os
 from gen_report import *
 
-report_path = 'report/report2.html'
+report_path = 'report/report.html'
 # Executa o projeto c com os parametros passados como entrada
 
 
