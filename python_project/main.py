@@ -14,8 +14,8 @@ def run_simulation(seed,
                    intervalo_pacotes,
                    tamanho_link,
                    tempo_simulacao):
-    cmd = f'c_project/main {seed} {taxa_chegada_web} {intervalo_entre_chamadas} {
-        duracao_chamada} {intervalo_pacotes} {tamanho_link} {tempo_simulacao}'
+    cmd = f"c_project/main {seed} {taxa_chegada_web} {intervalo_entre_chamadas} \
+        {duracao_chamada} {intervalo_pacotes} {tamanho_link} {tempo_simulacao}"
     subprocess.run(cmd, shell=True)
 
 # Abre automaticamente o arquivo html gerado no navegador
@@ -31,7 +31,8 @@ def open_report():
 def main():
     print()
     print("+" + "-" * 58 + "+")
-    print("|" + " " * 12 + ">>Simulador de Eventos Discretos WEB+CALL<<" + " " * 12 + "|")
+    print("|" + " " * 12 +
+          ">>Simulador de Eventos Discretos WEB+CALL<<" + " " * 12 + "|")
     print("+" + "-" * 58 + "+\n")
 
     while True:
