@@ -27,4 +27,5 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./report
-        publish_branch: gh-pages  
+        publish_branch: gh-pages
+        destination_dir: report_web  
