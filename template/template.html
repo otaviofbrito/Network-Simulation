@@ -30,55 +30,57 @@
       <div class="section">
         <h2>Simulação de Rede Pt. 2 (Navegação na Web + Chamada em Tempo Real)</h2>
         <p>
-          Para simular um roteador recebendo pacotes de navegação web, a
-          simulação envolve a chegada de pacotes seguindo uma
-          <b>distribuição exponencial</b>, semelhante à fila
-          <a
-            href="https://otaviofbrito.github.io/discrete-time-event-simulation/report.html"
-            target="_blank"
-            >M/M/1</a
-          >. No entanto, o tempo médio de atendimento é calculado com base nos
-          tamanhos dos pacotes que chegam (\(L\)) em <b>bytes</b> e na
-          capacidade de atendimento do link (\(R\)) em <b>bytes/s</b>, seguindo
-          a fórmula: $$R =\frac{L \cdot \lambda}{\rho}$$.
+          Para a parte dois deste trabalho, acrescentamos no simulador desenvolvido na etapa anterior,
+          a possibilidade da realização de chamadas em tempo real pelos usuários. Da mesma forma, 
+          a simulação de chamadas, envolve a chegada de pacotes, seguindo uma <b>distribuição exponencial</b>. 
         </p>
       </div>
       <hr class="stylized-line" />
       <div class="section">
         <h2>Cenário</h2>
         <p>
-          No cenário simulado, utilizou-se a taxa de chegada dos pacotes
-          (\(\lambda\)) como
-          <b>100 pacotes/segundo</b>, e a geração dos pacotes teve o objetivo de
-          simular um comportamento de navegação na web, seguindo as seguintes
-          proporções:
+          Conforme discutido no trabalho anterior, para realizarmos nossa simulações,
+           precisamos ter controle sobre algumas variáveis. Nesse caso, com adição deste evento, 
+           possuímos possuímos 2 variáveis aleatórias adicionais: o <b>intervalo entre o início de novas chamadas</b>
+           e <b>tempo de duração das chamadas</b>. Para esse cenário, assumimos que: 
         </p>
-
         <ul>
-          <li>50% dos pacotes têm tamanho de <b>550 bytes</b></li>
-          <li>40% dos pacotes têm tamanho de <b>40 bytes</b></li>
-          <li>10% dos pacotes têm tamanho de <b>1500 bytes</b></li>
-        </ul>
+          <li>O intervalo entre o início de novas chamadas: distribuição exponencial com média de 30 segundos</li>
+          <li>Tempo de duração das chamadas: distribuição exponencial com média de 60 segundos</li>
+        </ul>  
+        
         <p>
-          Foi utilizado uma
-          <a
-            href="https://github.com/otaviofbrito/Network-Simulation/blob/074190374e4b81c0ab2a8430abbdc45445bedef5/c_project/include/metrics.c#L55C5-L55C17"
-            target="_blank"
-            >função aleatória ponderada</a
-          >
-          para a geração dos pacotes conforme as proporções descritas:
+          Como as chamadas utilizam o CODEC G.711, temos que: 
         </p>
-        <script src="https://emgithub.com/embed-v2.js?target=https%3A%2F%2Fgithub.com%2Fotaviofbrito%2FNetwork-Simulation%2Fblob%2F21133291a92cfe114a1957cae289e63a558d048a%2Fc_project%2Finclude%2Fmetrics.c%23L55-L74&style=github&type=code&showBorder=on&showLineNumbers=on&showFileMeta=on&showFullPath=on&showCopy=on"></script>
-
+        <ul>
+          <li>Taxa de geração dos pacotes: 64 <b>Kbps</b></li>
+          <li>Intervalo entre pacotes: 20 ms <b>CBR (Constant Bit Rate)</b>. Isto é a transmissão de bits será constante, 
+            e portanto o tamanho dos pacotes também.</li>
+        </ul>  
+        <p>
+          Com essas informações podemos obter algumas medidas para esse cenário. como a taxa de chegada dos 
+          pacotes (\(\lambda\)) e o tamanho médio dos pacotes para as chamadas (\(L\)).
+        </p>
         <div>
           <h3>Tamanho Médio dos Pacotes (\(L\))</h3>
           <p>
-            O tamanho médio dos pacotes pode ser calculado com base nas
-            proporções fornecidas: $$L = (0.5 \times 550) + (0.4 \times 40) +
-            (0.1 \times 1500)$$ $$L = 441 \ \text{bytes}$$
+            Temos que a taxa de geração é de 64 Kbps, o que equivale a 8000 bytes/s: 
+             \( 64 \, \text{Kbps} = \frac{64 \times 1000}{8} \)
+             \( 64 \, \text{Kbps} = 8000 \, \text{bytes/s} \)
+
+             Como cada pacote é gerado a uma taxa de 20 ms, ou \( 0,02 \, \text{s} \), 
+             o tamanho de cada pacote será \( 8000 \times 0,02 = 160 \, \text{Bytes} \). 
           </p>
         </div>
-
+        <div>
+          <h3>Taxa de chegada de pacotes (\(\lambda\))</h3>
+          <p>
+            Para (\(\lambda\)): 
+            \( 1 \, \text{segundo} = 1000 \, \text{ms} \) <br>
+            \( \frac{1000}{20} = 50 \, \text{pacotes por segundo} \). <br>
+            De fato, pois: \( \frac{1}{\lambda} = 0,02 \) e \( \lambda = 50 \, \text{pacotes/segundo} \).
+          </p>
+        </div>
         <div>
           <h3>Ocupação</h3>
           <p>
