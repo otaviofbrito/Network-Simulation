@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
       update_metrics(metrics, en, ew_chegadas, ew_saidas, soma_ocupacao, tempo_decorrido);
 
       // Escrever no arquivo CSV
-      fprintf(file, "%f,%lu,%f,%f,%f,%f,%f,%f,%f,%f\n",
+      fprintf(file, "%f,%lu,%f,%f,%f,%f,%f,%.15f,%f,%f\n",
               tempo_decorrido, fila_max, metrics->ocupacao,
               metrics->en_final, metrics->ew_final,
               metrics->lambda, metrics->mu,
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
   printf("Ocupacao: %lf\n", metrics->ocupacao);
   printf("E[N]: %lf\n", metrics->en_final);
   printf("E[W]: %lf\n", metrics->ew_final);
-  printf("Erro de Little: %lf\n", metrics->little_error);
+  printf("Erro de Little: %.15f\n", metrics->little_error);
   printf("Lambda: %lf\n", metrics->lambda);
   printf("Mu: %lf\n", metrics->mu);
 
